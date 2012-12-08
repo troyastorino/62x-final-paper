@@ -1,0 +1,72 @@
+<config>
+  <root-log-folder>"/home/envoy/data/mark_troy/62x"</root-log-folder> <!-- enter as a String -->
+  
+  <chem-pose>
+    <x>-2.90</x>
+    <y>-4.66</y>
+    <z>0</z>
+  </chem-pose>
+
+  <!-- Form of q * exp(-|x_r - x_s|^2 / v^2) + k-->
+  <gaussian-model-params>
+    <amplitude-coefficient>0.3748</amplitude-coefficient> <!-- q in above form of the
+    model. Set to be max resistance value-->
+    <width-coefficient>1.085</width-coefficient> <!-- v in above form of the model-->
+    <height-offset>-10.8534</height-offset>
+    <measurement-noise>1</measurement-noise>
+    <process-noise>0</process-noise>
+  </gaussian-model-params>
+
+  <mt-model-params>
+    <max-reading-variance>1000</max-reading-variance>
+    <min-reading-variance>100</min-reading-variance>
+    <peak-radius>2</peak-radius><!-- Distance from source where we expect higher
+    reading variance-->
+    <!-- The noise of the reading variance is modeled as a constant within the
+         peak radius, and as dropping exponentially after that-->
+    <min-variance-noise>100</min-variance-noise>
+    <max-variance-noise>1000</max-variance-noise>
+    <variance-noise-width>1</variance-noise-width> <!-- Parameter for the
+    variance of the gaussian outside of the source position-->
+  </mt-model-params>
+
+  <particle-filter-params>
+    <sqrt-num-particles>75</sqrt-num-particles>
+  </particle-filter-params>
+
+  <planner-params>
+    <movement-percentage>0.01</movement-percentage> <!-- percentage of distance
+    to estimate to move.  Should be between on interval [0,1] -->
+    <minimum-movement-distance>1.5</minimum-movement-distance>
+    <stochasticity>0</stochasticity> <!-- should be in interval [0, pi] -->
+    <air-settling-time>30000</air-settling-time>
+    <readings-time>30000</readings-time> <!-- time to take readings for at each
+    location. In milliseconds -->
+    <velocity>0.25</velocity>
+    <nav-plan-timeout>1000</nav-plan-timeout> <!-- in millis -->
+    <reach-goal-timeout>30000</reach-goal-timeout> <!-- in millis -->
+    <manual-reach-goal-timeout>120000</manual-reach-goal-timeout> <!-- in millis -->
+    <localization-distance>1.0</localization-distance>
+  </planner-params>
+
+  <controller-params>
+    <calibration-time>60000</calibration-time>
+  </controller-params>
+
+  <!-- Room that the test is being run in. Should be a tag with that name
+  holding the dimesions of the room. Make sure params for the room are decimal numbers-->
+
+  <room>kiva</room>
+
+  <kiva>
+    <center-x>-0.21</center-x>
+    <center-y>-4.13</center-y>
+    <radius>4.5</radius>
+    <length-x>13.5</length-x>
+    <length-y>13.64</length-y>
+  </kiva>
+
+  <channels>
+    <chem-sensor>CHEMICAL_SENSOR</chem-sensor>
+  </channels>
+</config>
