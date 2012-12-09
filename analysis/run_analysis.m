@@ -1,27 +1,21 @@
 close all
 clear all
 
-disp('Localization circle:')
-analyze_data(@localization_circle_metric);
+%% Get data
+[stochastic, greedy] = get_all_data();
 
-disp('Localization circle without trial 3:')
-analyze_data(@localization_circle_metric,0);
+%% Run with all trials
+disp('Metric analysis with all trials')
+analyze_with_metrics(stochastic, greedy);
 
-disp('KL divergence from uniform, i.e. ratio of information gain rate:')
-analyze_data(@kl_divergence_from_uniform_metric);
+%% Run without third trials
+stochastic_without_3 = stochastic;
+stochastic_without_3(3) = [];
+greedy_without_3 = greedy;
+greedy_without_3(3) = [];
 
-disp('KL divergence from uniform without trial 3:')
-analyze_data(@kl_divergence_from_uniform_metric,0);
+disp('Metric analysis without source location 3')
+analyze_with_metrics(stochastic_without_3, greedy_without_3);
 
-disp('Weighted distance:')
-analyze_data(@weighted_distance_metric,0);
-
-disp('Weighted distance without trial 3:')
-analyze_data(@weighted_distance_metric,0);
-
-disp('KL divergence from "ideal" posterior:')
-analyze_data(@kl_divergence_from_ideal_metric);
-
-disp('KL divergence from "ideal" posterior without trial 3:')
-analyze_data(@kl_divergence_from_ideal_metric,0);
-
+%% Plot posteriors
+plot_posteriors(stochastic, greedy)

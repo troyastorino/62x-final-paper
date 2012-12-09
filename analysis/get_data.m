@@ -1,4 +1,4 @@
-function [ particle_log, chem_pose, time, pose ] = get_data( run_num )
+function [ particle_log, chem_pose, time, pose ] = get_data( trial_num )
 
 % directory name for each trial:
 dirname_mat = {
@@ -42,8 +42,8 @@ chemical_position_mat = [
     2.25 -5.33;
     5.96 1.64];
 
-dirname = dirname_mat{run_num};
-chem_pose = chemical_position_mat(run_num,:);  
+dirname = dirname_mat{trial_num};
+chem_pose = chemical_position_mat(trial_num,:);  
 
 fname = [dirname 'estimator.log'];
 fname_particles = [dirname 'particles.log'];

@@ -1,32 +1,27 @@
-function [ p,t ] = analyze_data( metric_fn, use_third_trial )
+function [ p,t ] = analyze_data( metric_fn, stochastic_trials, greedy_trials)
 %UNTITLED7 Summary of this function goes here
 %   Detailed explanation goes here
 
-%% Chose trials to use
+%% Constants
+trial_time = 35;
 
 
 %% Read in and evaluate all the data
-values = zeros(1,18);
-for i = 1:18
-    [final_particles, chem_pose, delta_t] = get_final_particles(i, 35);
-    values(i) = metric_fn(final_particles, chem_pose, delta_t);
+num_trials = length(stochastic_trials);
+stochastic = zeros(num_trials, 1);
+greedy = zeros(num_trials, 1);
+for i = 1:num_trials
+    % stochastic trial
+    [final_particles, chem_pose, delta_t] = get_final_particles(...
+        stochastic_trials(i), trial_time);
+    stochastic(i) = metric_fn(final_particles, chem_pose, delta_t);
+    
+    % greedy trial
+    [final_particles, chem_pose, delta_t] = get_final_particles(...
+        greedy_trials(i), trial_time);
+    greedy(i) = metric_fn(final_particles, chem_pose, delta_t);
 end
 
-%% separate into stochastic and greedy trials
-stochastic_trials = [1,3,5,8,10,11,13,15,18];
-greedy_trials = [2,4,6,7,9,12,14,16,17];
-
-if nargin < 2
-    use_third_trial = 1;
-end
-
-if ~(use_third_trial)
-    stochastic_trials(3) = [];
-    greedy_trials(3) = [];
-end
-
-stochastic = values(stochastic_trials);
-greedy = values(greedy_trials);
 
 %% calculate ratios and statistics on ratios
 ratio = stochastic ./ greedy;
@@ -70,12 +65,16 @@ set(gca,'FontSize',[14],'FontWeight','Bold','XColor',axescolor,'YColor',axescolo
 
 end
 
-function [particles, chem_pose, delta_t] = get_final_particles(run_num, trial_time)
+function [particles, chem_pose, delta_t] = get_final_particles(...
+    trial_struct, trial_time)
 % trial time is the time since the trial began (in minutes) to get the
 % particles for.  If not provided, gets the last set of particles
 % available. Also returns the actual amount of time that has elapsed over
 % the course of the trial
-[particle_log, chem_pose, time] = get_data( run_num );
+
+particle_log = trial_struct.particle_log;
+chem_pose = trial_struct.chem_pose;
+time = trial_struct.time;
 
 % Read in trial begin time:
 begin_time = time(1);
@@ -91,8 +90,8 @@ end_time = time(end_ind);
 % calculate the actual time elapsed during the trial up to the measurement
 % point.  Measured in minutes
 delta_t = (end_time - begin_time)*1e-6/60;
-if run_num == 11
-    delta_t = 35;
+if delta_t > trial_time + 5
+    delta_t = trial_time;
 end
 
 % Get particle probabilities at the trial end time:
