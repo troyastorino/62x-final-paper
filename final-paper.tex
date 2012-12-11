@@ -398,8 +398,7 @@ subtracting the trial start time.
 The results of this experiment contradict the hypothesis presented in
 section \ref{sec:hos}.  This section contains  a summary of experimental data
 and detailed statistical analysis of the data to assess the
-hypothesis.  The section also contains calculations to assess
-confidence in the data.
+hypothesis.
 
 \subsection{Experimental Data}
 For each of the nine source locations, table \ref{tab:data} shows the
@@ -414,8 +413,8 @@ each trial is calculated according to the equation $rate =
 \frac{m_f/m_0}{T_{trial}}$ where $T_{trial}$ is the length of the
 trial in minutes.  The ratio $R$ is given by the equation $R =
 \frac{rate_{stoch}}{rate_{greedy}}$ and serves as a numerical
-comparison between the localization rate using the greedy planner, and
-the localization rate using the stochastic planner, for each source location.
+comparison between the localization rate using the greedy planner and
+the localization rate using the stochastic planner for each source location.
 
 \begin{table}[htb]
 \begin{center}
@@ -448,8 +447,8 @@ $R_{mean} = 0.905$ and was used to assess the hypotheis as false. The
 90\% confidence interval on $R_{mean}$ is $(0.7313,1.0787)$.
 
 \subsection{Statistical Hypothesis Assessment}
-A one-sided Student's t-test with 8 degrees of freedom on the
-alternative hypothesis $R_{mean} > 1.2$ gave a t-statistic of $-3.1591$ with a
+A one-sided Student's t-test with 8 degrees of freedom on alternative
+hypothesis $R_{mean} > 1.2$ gave a t-statistic of $-3.1591$ with a
 corresponding p-value of $0.9933$.  Thus, the probabilty of
 obtaining a measured ratio greater than or equal to $R_{mean} = 0.905$
 is $99.3\%$ under the null hypothesis ($R_{mean} = 1.2$), so the
@@ -471,22 +470,24 @@ data and the rejected hypothesis.
 \label{sec:additional}
 In addition to the assessment of the hypothesis, a two-sided Student's
 t-test with 8 degrees of freedom was used on the hypothesis $R_{mean}
-= 1$ to determine whether any difference in the localization rates
-using the two planners was statistically significant.  This test gave
+= 1$ to determine whether there was any statistically significant
+difference in the mean localization rates.  This test gave
 a t-statistic of $-1.0174$ and a p-value of $0.3388$, showing that
-there is no statistically significant difference in the localization
+there is no statistically significant difference in the mean localization
 rate achieved with the stochastic planner and the rate achieved with
 the simple gradient descent planner.
 
 \section{Discussion}
-As described in the previous section, the stochastic planner was not shown to produce a higher localization
+As described in the previous section, the stochastic planner was not
+shown to produce a higher mean localization
 rate than the simple gradient descent planner.  One possible cause may
 have been
 that the system did not produce a statistically significant increase
 in the sum of probability mass inside the localization radius using
 either planner.  The results of a two-sided Student's t-test on the
 null hypothesis $\frac{m_f}{m_0} = 1$ are given in table
-\ref{tab:nofind}.  Although the t-statistics show some increase,
+\ref{tab:nofind}.  Although the t-statistics show some increase in the
+sum of probability mass inside the localization radius,
 particularly in the case of the stochastic planner, this increase is
 not significant at a 10\% level.
 
@@ -608,7 +609,7 @@ stochastic planner in such a circumstance, it was desired to know
 whether there was any difference between the full amount of information
 gained in a trial using the greedy planner, and the amount gained
 using a stochastic planner.  The amount of information gained in each
-trial was measured by calculating the Kullback–Leibler divergence (KL
+trial was measured by calculating the Kullback – Leibler divergence (KL
 divergence) of
 the final particle filter probability distribution from the initial
 uniform distribution where all of the particles are assigned the same
@@ -639,7 +640,7 @@ The mean of the ratios $\frac{KL_{stoch}}{KL_{greedy}}$ over the 9
 source locations is equal to $mean(\frac{KL_{stoch}}{KL_{greedy}}) =
 TROYFILLTHISIN$.  A two-sided Student's t-test with the null hypothesis
 $mean(\frac{KL_{stoch}}{KL_{greedy}}) = 1$ gave a t-statistic of
-$-0.3851$ and a p-value of $0.7102$.  This metric ignores the 
+$-0.3851$ and a p-value of $0.7102$.  This 
 
 
 
