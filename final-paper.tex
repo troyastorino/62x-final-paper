@@ -75,10 +75,10 @@ use of gradient descent approaches to autonomous path planning.
 \section{Hypothesis, Objective, Success Criteria}
 \label{sec:hos}
 \subsection*{Hypothesis} 
-The mean time for an autonomous ground robot, equipped with a chemical vapor
-sensor, to localize a chemical vapor source via a two-dimensional search will
-be 20\% faster using a stochastic planner than using a simple gradient descent
-planner.\footnote{
+The mean localization rate of a 45-minute two-dimensional search by an
+autonomous ground robot equipped with a chemical vapor sensor will be
+20 percent greater using a stochastic planner than using a simple gradient descent planner.
+\footnote{
   A simple gradient descent algorithm will
   take samples from regions neighboring the robot’s current location, 
   and will always move in the direction of the neighboring region with
@@ -89,14 +89,10 @@ planner.\footnote{
   measurements.}
 
 \subsection*{Objective}
-Equip a ground robot furnished by the CSAIL Robust Robotics Group with an
-Alpha MOS NEEM chemical sensor, implement the planners on the robot’s
-software platform, and assess the mean times to localize a dish of ethanol in a
-closed room.
+Equip a ground robot furnished by the CSAIL Robust Robotics Group with an Alpha MOS NEEM chemical sensor, implement the planners on the robot’s software platform, and assess the mean localization rate of a cup of ethanol in a closed room.
 
 \subsection*{Success Criteria} 
-Determine the difference in mean localization time to a sufficient accuracy such
-that the hypothesis can be assessed.
+Determine the difference in mean localization rate to a sufficient precision such that the hypothesis can be assessed.
 
 \section{Literature Review}
 Approaches to robotic odor localization may be analyzed as a combination of
@@ -398,8 +394,254 @@ the source location, and find the localization time for the trial by
 subtracting the trial start time.
 
 \section{Results}
+\label{sec:results}
+The results of this experiment contradict the hypothesis presented in
+section \ref{sec:hos}.  This section contains  a summary of experimental data
+and detailed statistical analysis of the data to assess the
+hypothesis.  The section also contains calculations to assess
+confidence in the data.
+
+\subsection{Experimental Data}
+For each of the nine source locations, table \ref{tab:data} shows the
+ratio of the localization rate of
+a trial using the stochastic planner to the localization rate of
+a trial using the simple gradient descent (greedy) planner, as well as
+the raw quantities used to calculate this ratio. $m_0$ is the initial sum of
+the probabilities of particle filter particles located inside the 1
+meter localization radius for each trial, and $m_f$ is the final sum
+of the probabilities of the same particles. The localization rate of
+each trial is calculated according to the equation $rate =
+\frac{m_f/m_0}{T_{trial}}$ where $T_{trial}$ is the length of the
+trial in minutes.  The ratio $R$ is given by the equation $R =
+\frac{rate_{stoch}}{rate_{greedy}}$ and serves as a numerical
+comparison between the localization rate using the greedy planner, and
+the localization rate using the stochastic planner, for each source location.
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+\hline
+ Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline \hline
+$m_{0_{greedy}}$ & 0.0502 & 0.0450 & 0.0500 & 0.0500 & 0.0497 & 0.0481 & 0.0493 & 0.0506 & 0.0497 \\
+\hline
+$m_{f_{greedy}}$ & 0.0468 & 0.0451 & 0.2935 & 0.0511 & 0.0519 & 0.0492 & 0.0562 & 0.0503 & 0.0518 \\
+\hline
+$r_{greedy}$ & 0.0259 & 0.0286 & 0.1656 & 0.0282 & 0.0298 & 0.0286 & 0.0303 & 0.0280 & 0.0293 \\
+\hline
+$m_{0_{stoch}}$ & 0.0502 & 0.0450 & 0.0500 & 0.0500 & 0.0497 & 0.0484 & 0.0493 & 0.0506 & 0.0490 \\
+\hline
+$m_{f_{stoch}}$ & 0.0521 & 0.0483 & 0.0525 & 0.0491 & 0.0480 & 0.0487 & 0.0495 & 0.0515 & 0.0491 \\
+\hline
+$r_{stoch}$ & 0.0295 & 0.0296 & 0.0299 & 0.0279 & 0.0268 & 0.0288 & 0.0280 & 0.0285 & 0.0280 \\
+\hline
+\hline
+$R = \frac{rate_{stoch}}{rate_{greedy}}$  & 1.1371 & 1.0345 & 0.1807 & 0.9869 & 0.9014 & 1.0056 & 0.9251 & 1.0164 & 0.9564\\
+\hline
+\end{tabular}
+\caption{Experimental Data \label{tab:data} }
+\end{center}
+\end{table}
+
+The mean $R_{mean}$ of the ratios $R$ for the nine source locations is equal to
+$R_{mean} = 0.905$ and was used to assess the hypotheis as false. The
+90\% confidence interval on $R_{mean}$ is $(0.7313,1.0787)$.
+
+\subsection{Statistical Hypothesis Assessment}
+A one-sided Student's t-test with 8 degrees of freedom on the
+alternative hypothesis $R_{mean} > 1.2$ gave a t-statistic of $-3.1591$ with a
+corresponding p-value of $0.9933$.  Thus, the probabilty of
+obtaining a measured ratio greater than or equal to $R_{mean} = 0.905$
+is $99.3\%$ under the null hypothesis ($R_{mean} = 1.2$), so the
+alternative hypothesis $R_{mean} > 1.2$ must be rejected.  Figure
+\ref{fig:killer} shows a graphical representation of the experimental
+data and the rejected hypothesis.
+
+\begin{figure}
+\begin{center}
+\fbox{
+\includegraphics[width=6in]{img/Killer.pdf}}
+\caption{Graphical representation of data and hypothesis.}
+\label{fig:killer}
+\end{center}
+\end{figure}
+
+
+\subsection{Additional Assessment of Results}
+\label{sec:additional}
+In addition to the assessment of the hypothesis, a two-sided Student's
+t-test with 8 degrees of freedom was used on the hypothesis $R_{mean}
+= 1$ to determine whether any difference in the localization rates
+using the two planners was statistically significant.  This test gave
+a t-statistic of $-1.0174$ and a p-value of $0.3388$, showing that
+there is no statistically significant difference in the localization
+rate achieved with the stochastic planner and the rate achieved with
+the simple gradient descent planner.
 
 \section{Discussion}
+As described in the previous section, the stochastic planner was not shown to produce a higher localization
+rate than the simple gradient descent planner.  One possible cause may
+have been
+that the system did not produce a statistically significant increase
+in the sum of probability mass inside the localization radius using
+either planner.  The results of a two-sided Student's t-test on the
+null hypothesis $\frac{m_f}{m_0} = 1$ are given in table
+\ref{tab:nofind}.  Although the t-statistics show some increase,
+particularly in the case of the stochastic planner, this increase is
+not significant at a 10\% level.
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|c||c|c|}
+\hline
+& t-statistic & p-value \\
+\hline \hline
+Greedy Planner & 1.0296 & 0.3333\\
+\hline
+Stochastic Planner& 1.3921 &0.2014\\
+\hline
+\end{tabular}
+\caption{Students t-test for an increase in the sum of probability
+  mass inside the localization radius over the time of a trial.
+  These results show no statistically significant increase. \label{tab:nofind} }
+\end{center}
+\end{table}
+
+
+One reason that the probability mass inside the localization
+radius was not shown to increase over the time of a trial may have been
+the presence of air currents in the room due to the ventilation
+system, the motion of the robot, and other random disturbances. Currents may have invalidated the
+assumption that the air directly above the true source location
+holds a higher chemical vapor concentration than all surrounding
+points.  A qualitative drifting behavior was observed in carrying out
+the experiment, where higher concentration measurements were taken
+at a distance of one to two meters in one direction from the source than were
+taken at similar distances in other directions, and even at the exact
+source location.  Further experimental characterization of indoor
+chemical dispersion is necessary to confirm this drifting
+behavior quantitatively.  The robotic localization system tested in
+this experiment attempts to localize the area of highest
+concentration, since the estimation algorithms assume the area of highest
+concentration to be the location of the true source.  If the true
+source location is in fact different from the location of the
+highest chemical vapor concentration, the system may not be able to accurately
+localize the source, regardless of which planner is used.  The
+possibility of system failure in the manner described represents a lack of robust estimation techniques, and
+calls for further research in the area of estimation algorithms for
+indoor robotic odor localization.
+
+The stochastic planner was expected to produce a greater localization
+rate than the simple gradient descent planner due to the fact that it
+was expected to gather concentration measurements from a larger
+percentage of the test room area.  In experimental trials with the
+stochastic planner, the system did gather measurements from a larger
+area than in trials with the greedy planner.  This result is shown
+qualitatively by the comparison of robot paths in figure \ref{fig:paths} and
+quantitatively in table \ref{tab:paths}, where $A_{greedy}$ and
+$A_{stoch}$ are the percentage of the area of the test room ``covered''
+using the greedy planner and the stochastic planner respectively.  For
+the purpose of this analysis, all of the area within 1 meter of the
+location where any concentration measurement was taken during a trial
+is considered to be ``covered'' in that trial.
+
+\begin{figure}
+\begin{center}
+\fbox{
+\includegraphics[width=6in]{img/paths.pdf}}
+\caption{Comparison of robot paths and resulting final particle filter
+  probability distributions using the greedy planner (left) and the
+  stochastic planner (right) for source locations 7 (top) and 8 (bottom). The
+  robot paths are shown in black, where each corner represents a
+  measurement location, and the true source locations are
+  shown in green.  The circular color fields represent the particle
+  filter probability distributions.  The particles making up the top 25\% of the
+  probability mass is shown in red, the particles making up the next
+  25\% are shown in yellow, and the bottom 50\% are shown in blue. It
+  is clear that the different planners produce different distributions
+of measurements over the space in the test room, and this results in
+different final particle filter probability distributions.}
+\label{fig:paths}
+\end{center}
+\end{figure}
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+\hline
+ Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline \hline
+$A_{greedy}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+$A_{stoch}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\caption{Experimental Data \label{tab:paths} }
+\end{center}
+\end{table}
+
+The differences in the distribution of measurement locations over the test room
+produced by the greedy planner and the stochastic planner caused the
+two planners
+to produce different final particle filter probability distributions,
+as illustrated qualitatively in figure \ref{tab:paths}.  However, as
+discussed in section \ref{sec:results}, the difference in final
+probability distributions did not produce a statistically significant
+difference in the localization rate.  As discussed earlier in this
+section, it is possible that the point of highest concentration is
+not the true source location.  If this is the case, the use of a localization radius about
+the true source location
+to determine the localization rate may not fully assess the
+relative performance of the two planners.  Though the use of a
+localization radius accurately
+assesses the performance of the system in localizing the true source,
+and thus correctly and accurately assesses the hypothesis, this metric only takes
+into account a subset of the information gained by the particle filter
+during a trial.
+
+It is feasible that a more robust estimaton technique could be developed through
+future research that takes into account any differences that may exist
+between the true source location and the location of highest chemical
+vapor concentration.  To gain preliminary intuition regarding the
+relative performance of the simple gradient descent planner and the
+stochastic planner in such a circumstance, it was desired to know
+whether there was any difference between the full amount of information
+gained in a trial using the greedy planner, and the amount gained
+using a stochastic planner.  The amount of information gained in each
+trial was measured by calculating the Kullback–Leibler divergence (KL
+divergence) of
+the final particle filter probability distribution from the initial
+uniform distribution where all of the particles are assigned the same
+probability.  The KL divergence of the particle filter probability
+distribution in each trial is shown in table \ref{tab:allinfo}.
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+\hline
+ Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline \hline
+Greedy KL divergence & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+Stochastic KL divergence & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\caption{Kullback-Leibler divergence of the final particle filter
+  probability distribution from the initial uniform particle
+  probability distribution.  This is a measure of how much
+  information about the environment was gained by the system in each trial. \label{tab:allinfo} }
+\end{center}
+\end{table}
+
+The mean of the ratios $\frac{KL_{stoch}}{KL_{greedy}}$ over the 9
+source locations is equal to $mean(\frac{KL_{stoch}}{KL_{greedy}}) =
+TROYFILLTHISIN$.  A two-sided Student's t-test with the null hypothesis
+$mean(\frac{KL_{stoch}}{KL_{greedy}}) = 1$ gave a t-statistic of
+$-0.3851$ and a p-value of $0.7102$.  This metric ignores the 
+
+
 
 \section{Summary and Conclusion}
 
