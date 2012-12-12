@@ -272,47 +272,70 @@ Figure \ref{fig:acquisition}.
 
 \subsubsection{Estimator}
 
-The estimate of the source location was obtained using a particle
-filter\cite{maskell2001tutorial}. Given
-a multivariate Gaussian prior distribution for the state, a command
-given to the robot, and a measurement, the EKF will update this
-probability distribution and return a multivariate Gaussian posterior
-distribution for the state. The EKF deals with multivariate Gaussian
-distributions characterized by a mean estimate for the state $\vec{\mu}$ and a
-covariance matrix $\Sigma$. This probability distribution represents
-our belief of the current state of the system. The state of the model depends only on the robot location $\vec{x_r}$ and the source location
-$\vec{x_s}$, and so the state vector $\vec{x}$ is represented by:
-\begin{equation} 
-\vec{x} = \colvec{2}{\vec{x_r}}{\vec{x_s}}
-\end{equation}
-The mean estimate returned by the EKF is over the entire state vector,
-nd we extract the component of the state that represents
-the source location in order to get the best source location estimate $\vec{x_s}$
-\begin{equation}
-\vec{\mu} = \colvec{2}{\hat{\vec{x_r}}}{\hat{\vec{x_s}}}
-\end{equation}
-This best source location estimate can be passed to the planner, so
-the planner can choose the next location to move to.
+The estimate of the source location was calculated using a particle
+filter\cite{maskell2001tutorial}. The particles were distributed with uniform
+spacing over the area of the test room, and each particle held the posterior
+estimate's belief that the source is at it's location. The particle density is listed in Table
+\ref{tab:estimator-parameters}. After each concentration measurement was
+received, a Bayesian update was performed on each particle: 
+\[P_n(x_i = x_s) \propto P(c_n | x_i = x_s) P_{n-1}(x_s = x_i)\]
+In the above expression, $P_n(x_i = x_s)$ is the posterior belief that the source is located at the
+$i^{th}$ particle location after the $n^{th}$ update. $c_n$ is the $n^{th}$ concentration
+measurement taken. $P(c_n | x_i = x_s)$ is the likelihood function, the probability that $c_n$ is
+measured given that the source is at the $i^{th}$ particle location according to
+the estimator's measurement model. The measurement model used has concentration
+measurements distributed normally: 
+\[c \sim \mathcal{N}\left(\bar{c}(x_s,x_r), \sigma \right)\]
+\[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{\abs{x_r - x_s}^2}{\nu^2}\right]} + k\]
+where $x_r$ is the robot's location when the measurement is taken.  The
+parameter values fitted from preliminary concentration data is listed in Table \ref{tab:estimator-parameters}.
+The dynamics of indoor chemical dispersion are complex, and this simple
+measurement model was chosen knowing that it did not capture many of the
+intricacies of the system. This was considered acceptable because it was thought
+that the estimation technique would be robust enough to be successful while
+treating the deviations of the true dynamics from this model as measurement
+noise.
+
+\begin{table}
+\caption[Estimator parameters]{Particle filter and measurement model parameters.}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Particle density & 69.4 $\frac{particles}{m^2}$ \\ \hline
+$\sigma$ & 1.0 \\ \hline
+$q$ & 0.3748 \\ \hline
+$\nu$ & 1.085  \\ \hline
+$k$ & -10.8534  \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:estimator-parameters}
+\end{table}
 
 \subsubsection{Planner}
+Two different planning algorithms were compared: a greedy planning algorithm and
+a stochastic planning algorithm. The greedy algorithm always moved the robot
+in the direction of the maximum probability estimate of the source location. The
+maximum probability estimate was calculated by taking the weighted average of
+all the particle locations:
+\[\hat{x_s} = \displaystyle\sum\limits_{i} x_i P(x_s = x_i) \]
+The movement distance that the greedy algorithm commanded is listed in Table
+\ref{tab:planner-parameters}.
 
-The two planning algorithms as
-follows: let $\hat{\vec{x_s}}$ be our current best estimate of the
-source location, 
-\begin{equation}
-\hat{\vec{x_s}} = E[P(\vec{x_s}|c_1, \dots ,c_{n},\vec{x_r})]
-\end{equation}
-The simple gradient descent algorithm will move 0.5 meters in the
-direction of the best source estimate $\hat{\vec{x_s}} - \vec{x_r}$.
-The stochastic gradient descent algorithm will move in the direction
-$\hat{\vec{x_s}} - \vec{x_r} + \vec{\epsilon}$, where $\vec{\epsilon}$
-is a normally distributed random variable:
-\begin{equation}
-E[\vec{\epsilon}] = \vec{0} \qquad Cov[\vec{\epsilon}] = 
-\left[\begin{array}{cc} \sigma^2 & 0 \\ 0 & \sigma^2 \end{array}\right]
-\end{equation}
-The robot will continually take measurements at a data rate of 1 Hz, issuing a
-new command after receiving each reading.
+The stochastic planner sampled a random particle from the posterior probability 
+distribution, and commanded the robot to move to the location of that particle. 
+
+\begin{table}
+\caption{Planner parameters}
+\begin{center}
+\begin{tabular}{|p{\tablewidthtwo}|p{\tablewidthtwo}|}
+\hline
+Commanded movement distance for greedy algorithm & 1.5 $m$ \\ \hline
+Time to wait for air to settle & 30 $sec$ \\ \hline
+Time to take readings &  30 $sec$ \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:planner-parameters}
+\end{table}
 
 \subsection{Experimental Process}
 \subsubsection{Test Environment}
@@ -334,7 +357,7 @@ Surface area of chemical vapor source & 0.018 $\text{m}^2$\\ \hline
 Vertical distance between sensor plane and
 test room floor & 0.3 $\text{m}^2$ \\ \hline
 Minimum initial distance between sensor and chemical & 2 $\text{m}$ \\ \hline
-Radius of localization & 0.2 $\text{m}$ \\ \hline
+Radius of localization & 1.0 $\text{m}$ \\ \hline
 Delay between robot start and source exposure & 30 minutes \\ \hline
 \end{tabular}
 \end{center}
@@ -636,7 +659,7 @@ and thus correctly and accurately assesses the hypothesis, this metric only take
 into account a subset of the information gained by the particle filter
 during a trial.
 
-It is feasible that a more robust estimaton technique could be developed through
+It is feasible that a more robust estimation technique could be developed through
 future research that takes into account any differences that may exist
 between the true source location and the location of highest chemical
 vapor concentration.  To gain preliminary intuition regarding the
