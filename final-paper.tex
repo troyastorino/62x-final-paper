@@ -13,6 +13,8 @@
 \usepackage{setspace}
 \usepackage[tocindentauto]{tocstyle}
 
+\usetocstyle{standard}
+
 \title{\textbf{Planning Algorithms for Indoor Robotic Odor
     Localization}\\
 {16.622 Final Report}}
@@ -262,30 +264,10 @@ decides what direction the robot should move in and commands the robot to move.
 \end{center}
 \end{figure}
 
-\subsubsection{Planner}
-
-We will implement our two gradient descent planning algorithms as
-follows: let $\hat{\vec{x_s}}$ be our current best estimate of the
-source location, 
-\begin{equation}
-\hat{\vec{x_s}} = E[P(\vec{x_s}|c_1, \dots ,c_{n},\vec{x_r})]
-\end{equation}
-The simple gradient descent algorithm will move 0.5 meters in the
-direction of the best source estimate $\hat{\vec{x_s}} - \vec{x_r}$.
-The stochastic gradient descent algorithm will move in the direction
-$\hat{\vec{x_s}} - \vec{x_r} + \vec{\epsilon}$, where $\vec{\epsilon}$
-is a normally distributed random variable:
-\begin{equation}
-E[\vec{\epsilon}] = \vec{0} \qquad Cov[\vec{\epsilon}] = 
-\left[\begin{array}{cc} \sigma^2 & 0 \\ 0 & \sigma^2 \end{array}\right]
-\end{equation}
-The robot will continually take measurements at a data rate of 1 Hz, issuing a
-new command after receiving each reading.
-
 \subsubsection{Estimator}
 
-We will obtain the our best source location estimate through the
-Bayesian inference technique of an Extended Kalman Filter (EKF)\cite{welch1995}. Given
+The estimate of the source location was obtained using a particle
+filter\cite{maskell2001tutorial}. After  Given
 a multivariate Gaussian prior distribution for the state, a command
 given to the robot, and a measurement, the EKF will update this
 probability distribution and return a multivariate Gaussian posterior
@@ -305,6 +287,26 @@ the source location in order to get the best source location estimate $\vec{x_s}
 \end{equation}
 This best source location estimate can be passed to the planner, so
 the planner can choose the next location to move to.
+
+\subsubsection{Planner}
+
+The two planning algorithms as
+follows: let $\hat{\vec{x_s}}$ be our current best estimate of the
+source location, 
+\begin{equation}
+\hat{\vec{x_s}} = E[P(\vec{x_s}|c_1, \dots ,c_{n},\vec{x_r})]
+\end{equation}
+The simple gradient descent algorithm will move 0.5 meters in the
+direction of the best source estimate $\hat{\vec{x_s}} - \vec{x_r}$.
+The stochastic gradient descent algorithm will move in the direction
+$\hat{\vec{x_s}} - \vec{x_r} + \vec{\epsilon}$, where $\vec{\epsilon}$
+is a normally distributed random variable:
+\begin{equation}
+E[\vec{\epsilon}] = \vec{0} \qquad Cov[\vec{\epsilon}] = 
+\left[\begin{array}{cc} \sigma^2 & 0 \\ 0 & \sigma^2 \end{array}\right]
+\end{equation}
+The robot will continually take measurements at a data rate of 1 Hz, issuing a
+new command after receiving each reading.
 
 \subsection{Experimental Process}
 \subsubsection{Test Environment}
