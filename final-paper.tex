@@ -166,8 +166,9 @@ of less than 10 minutes, beginning an average distance of 1.8m from the source.
 The model used in these localization algorithms is not explicitly described in
 \cite{ferri}, but the assumption that the model is time invariant and monotonic with a
 single peak is a defining component of the successful localization algorithms
-presented in this paper. Based on the success of Ferri, et al., it was decided
-that this experiment would use a Gaussian concentration field model, treating
+presented in this paper. Based on the success of Ferri, et al., it was
+deemed reasonable to choose a Gaussian model for this
+experiment, and to treat
 the effects of turbulent fluid currents in the air as noise. A Bayesian filter
 was selected as an estimator to account for this noise in determining a
 probability distribution of the source location after each measurement. The
@@ -360,13 +361,11 @@ the first chemical sensor reading was taken.
 Nine sets of two trials were conducted using the nine chemical source
 locations shown in figure \ref{fig:testroom}.  For each source
 location, one trial was conducted using the greedy planner, and one trial
-was conducted using the stochastic planner.
-
-When the location of the source was changed between trials, a waiting period of at least 2 hours
+was conducted using the stochastic planner.  When the location of the source was changed between trials, a waiting period of at least 2 hours
 was allowed, during which no ethanol was exposed. According to regulations regarding the air
 cycle rate for an office building, it was determined that the air in
 the test room was replaced 4 times per hour.  Thus, it was assumed that a 2 hour waiting
-period cleaned the room of ethanol traces.
+period allowed time for the room to be cleaned of ethanol traces.
 
 \subsubsection{Data Acquisition}
 All of the particles of the particle filter located less than a distance of 1 meter from the
@@ -460,7 +459,7 @@ data and the rejected hypothesis.
 
 \subsection{Additional Assessment of Results}
 \label{sec:additional}
-In addition to the assessment of the hypothesis, a two-sided Student's
+In addition to the assessment of the hypothesis presented in section \ref{sec:hos}, a two-sided Student's
 t-test with 8 degrees of freedom was used on the hypothesis $R_{mean}
 = 1$ to determine whether there was any statistically significant
 difference in the mean localization rates.  This test gave
@@ -535,9 +534,10 @@ qualitatively by the comparison of robot paths in figure \ref{fig:paths} and
 quantitatively in table \ref{tab:paths}, where $A_{greedy}$ and
 $A_{stoch}$ are the percentage of the area of the test room ``covered''
 using the greedy planner and the stochastic planner respectively.  For
-the purpose of this analysis, the covered area is calculated by area the convex hull
-of the set of locations that the robot took measurements at, i.e., the area of
-the smallest convex shape that includes all the measurement locations.
+the purpose of this analysis, the covered area is calculated by the
+area of the convex hull
+of the set of locations at which the robot took measurements, i.e., the area of
+the smallest convex shape that includes all of the measurement locations.
 
 \begin{figure}
 \begin{center}
@@ -570,7 +570,7 @@ $A_{greedy}$ & 0.1006 & 0.0750 & 0.237 & 0.0775 & 0.0802 & 0.1042 & 0.0669 & 0.0
 $A_{stoch}$ & 0.4940 & 0.4523 & 0.5405 & 0.5278 & 0.5032 & 0.5717 & 0.4930 & 0.5469 & 0.5311 \\
 \hline
 \end{tabular}
-\caption{Percentage of possible area covered by the different planning algorithms.}
+\caption{Fraction of possible area covered by the different planning algorithms.}
 \label{tab:paths}
 \end{center}
 \end{table}
@@ -595,48 +595,50 @@ into account a subset of the information gained by the particle filter
 during a trial.
 
 It is feasible that a more robust estimaton technique could be developed through
-future research that takes into account any differences that may exist
-between the true source location and the location of highest chemical
-vapor concentration.  To gain preliminary intuition regarding the
+future research that takes into account the fact that there may not
+exist a maximum chemical vapor concentration at the true source location.  To gain preliminary intuition regarding the
 relative performance of the simple gradient descent planner and the
-stochastic planner in such a circumstance, it was desired to know
-whether there was any difference between the full amount of information
-gained in a trial using the greedy planner, and the amount gained
-using a stochastic planner.  The amount of information gained in each
-trial was measured by calculating the Kullback – Leibler divergence (KL
-divergence) of
-the final particle filter probability distribution from the initial
-uniform distribution where all of the particles are assigned the same
-probability.  The KL divergence of the particle filter probability
-distribution in each trial is shown in table \ref{tab:allinfo}.
+stochastic planner in such a circumstance 
 
-\begin{table}[htb]
-\begin{center}
-\begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
-\hline
- Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
-\hline \hline
-$KL_{greedy}$  & 0.0029 & 0.0019 & 0.3156 & 0.0024 & 0.0071 & 0.0007 & 0.0070 & 0.0039 & 0.0085 \\
-\hline
-$KL_{stochastic}$ & 0.0013 & 0.0082 & 0.0017 & 0.0015 & 0.0030 & 0.0019 & 0.0012 & 0.0008 & 0.0011 \\
-\hline
-$\frac{KL_{stoch}}{KL_{greedy}}$ & 0.4463 & 4.3945 & 0.0052 & 0.6107 & 0.4157 & 2.7365 & 0.1711 & 0.1990 & 0.1282 \\
-\hline
-\end{tabular}
-\caption[KL divergence of posterior distribution from a uniform distribution]{Kullback-Leibler divergence of the final particle filter
-  probability distribution from the initial uniform particle
-  probability distribution.  This is a measure of how much
-  information about the environment was gained by the system in each trial. }
-\label{tab:allinfo}
-\end{center}
-\end{table}
 
-The mean of the ratios $\frac{KL_{stoch}}{KL_{greedy}}$ over the 9
-source locations is equal to $mean(\frac{KL_{stoch}}{KL_{greedy}}) =
-1.0119$.  A two-sided Student's t-test with the null hypothesis
-$mean(\frac{KL_{stoch}}{KL_{greedy}}) = 1$ gave a t-statistic of
-$0.0235$ and a p-value of $0.9818$.  This shows there is no significant
-difference in the information gain between the two.
+%  it was desired to know
+% whether there was any difference between the full amount of information
+% gained in a trial using the greedy planner, and the amount gained
+% using a stochastic planner.  The amount of information gained in each
+% trial was measured by calculating the Kullback – Leibler divergence (KL
+% divergence) of
+% the final particle filter probability distribution from the initial
+% uniform distribution where all of the particles are assigned the same
+% probability.  The KL divergence of the particle filter probability
+% distribution in each trial is shown in table \ref{tab:allinfo}.
+
+% \begin{table}[htb]
+% \begin{center}
+% \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+% \hline
+%  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+% \hline \hline
+% $KL_{greedy}$  & 0.0029 & 0.0019 & 0.3156 & 0.0024 & 0.0071 & 0.0007 & 0.0070 & 0.0039 & 0.0085 \\
+% \hline
+% $KL_{stochastic}$ & 0.0013 & 0.0082 & 0.0017 & 0.0015 & 0.0030 & 0.0019 & 0.0012 & 0.0008 & 0.0011 \\
+% \hline
+% $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.4463 & 4.3945 & 0.0052 & 0.6107 & 0.4157 & 2.7365 & 0.1711 & 0.1990 & 0.1282 \\
+% \hline
+% \end{tabular}
+% \caption[KL divergence of posterior distribution from a uniform distribution]{Kullback-Leibler divergence of the final particle filter
+%   probability distribution from the initial uniform particle
+%   probability distribution.  This is a measure of how much
+%   information about the environment was gained by the system in each trial. }
+% \label{tab:allinfo}
+% \end{center}
+% \end{table}
+
+% The mean of the ratios $\frac{KL_{stoch}}{KL_{greedy}}$ over the 9
+% source locations is equal to $mean(\frac{KL_{stoch}}{KL_{greedy}}) =
+% 1.0119$.  A two-sided Student's t-test with the null hypothesis
+% $mean(\frac{KL_{stoch}}{KL_{greedy}}) = 1$ gave a t-statistic of
+% $0.0235$ and a p-value of $0.9818$.  This shows there is no significant
+% difference in the information gain between the two.
 
 The important metric is not general information gain, however, but is the gain
 of information about the source location. There are other metrics that use the
