@@ -198,7 +198,7 @@ A simple gradient descent (greedy) planning aglorithm and a
 stochastic planning algorithm were tested using the
 same model and estimation method. A sensor capable of identifying the
 concentration of ethanol in the surrounding air was mounted on a ground
-robot. A plate of ethanol was placed in a test room, and the mean rate at which the robot localized the ethanol source
+robot. A dish of ethanol was placed in a test room, and the mean rate at which the robot localized the ethanol source
 using the greedy planner was compared to the mean rate using the
 stochastic planner.
 
@@ -208,7 +208,7 @@ stochastic planner.
 
 The Alpha MOS NEEM chemical sensor shown in figure \ref{fig:sensor} was
 attached to the Envoy robotic platform of the Robust Robotics Group, illustrated in figure \ref{fig:wheelchair}.  The sensor was mounted
-10 inches above the ground.
+30 cm above the ground.
 
 
 \begin{figure}
@@ -340,12 +340,19 @@ Time to take readings &  30 $sec$ \\ \hline
 \subsection{Experimental Process}
 \subsubsection{Test Environment}
 
-Our experiment will be conducted in three closed rooms with irregular shapes.
-The floorplans of the rooms are shown in Figure \ref{fig:floorplans}. The
-ventilation systems of the room will be undisturbed in order to keep the test
-environment close to that of a typical indoor environment. A sketch of the
-experimental setup is shown in Figure~\ref{fig:layout}. Parameters of the
+The experiment was conducted in a single test room with a floorplan
+shown in figure \ref{fig:testroom}. The ventilation system of the room was undisturbed in order to keep the test
+environment close to that of a typical indoor environment. Parameters of the
 experiment are shown in Table \ref{tab:parameters}.
+
+\begin{figure}
+\begin{center}
+\fbox{
+\includegraphics[width=4in]{img/testroom.pdf}}
+\caption{Testroom floorplan and chemical vapor source locations.}
+\label{fig:testroom}
+\end{center}
+\end{figure}
 
 \begin{table}
 \caption{Parameters of the experiment.}
@@ -355,97 +362,50 @@ experiment are shown in Table \ref{tab:parameters}.
 Chemical used as source & Liquid ethanol, 70\% \\ \hline
 Surface area of chemical vapor source & 0.018 $\text{m}^2$\\ \hline
 Vertical distance between sensor plane and
-test room floor & 0.3 $\text{m}^2$ \\ \hline
+test room floor & 0.3 $\text{m}$ \\ \hline
 Minimum initial distance between sensor and chemical & 2 $\text{m}$ \\ \hline
 Radius of localization & 1.0 $\text{m}$ \\ \hline
 Delay between robot start and source exposure & 30 minutes \\ \hline
+Delay between source exposure and the start of a trial & 30 minutes \\ \hline
+Duration of trial & 35 minutes \\ \hline
 \end{tabular}
 \end{center}
 \label{tab:parameters}
 \end{table}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=7in]{img/rooms.pdf}
-\caption[Experimental room floorplan]{The rooms in the Stata Center where the experiments will
-  be carried out.  From left to right, the room numbers are D461,
-  D463, and G449.}
-\label{fig:floorplans}
-\end{center}
-\end{figure}
-
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=3in]{img/layout.pdf}
-\caption{Sketch of experimental setup.}
-\label{fig:layout}
-\end{center}
-\end{figure}
-
-
 \subsubsection{Test Procedure}
+A single exposed dish of ethanol was placed in the test room at least 30
+minutes before the start of each trial, and remained undisturbed at
+its initial location for the entirety of the trial. The robot was
+initialized at a random location no less than 2 meters away from the
+location of the source, and operated  autonomously throughout
+the trial.  The duration of each trial was 35 minutes, beginning when
+the first chemical sensor reading was taken. 
 
-An exposed dish of ethanol will be placed at a random location in the test room
-30 minutes before each trial begins, and will remain undisturbed at this
-location for the entirety of the trial. The exposed surface area of ethanol will
-also remain constant. The initial position of the robot will also be determined
-randomly for each trial, subject to the constraint that it is no less than 2 m
-from the dish of ethanol.  The robot will be started remotely after the 30
-minute delay.
+Nine sets of two trials were conducted using the nine chemical source
+locations shown in figure \ref{fig:testroom}.  For each source
+location, one trial was conducted using the greedy planner, and one trial
+was conducted using the stochastic planner.
 
-Each trial will be terminated after 60 minutes. Preliminary experiments will be
-run to ensure the robot can locate the source in under 60 minutes in for the
-majority of the preliminary trials for one of the algorithms. If 60 minutes is
-not sufficient time for the robot to localize the source, the maximum trial time
-length will be increased.
-
-Consecutive trials conducted in the same room will be separated by at least 2
-hours, during which no ethanol is exposed. Due to regulations regarding the air
-cycle rate for an office building, we can conservatively say that the air in one
-of our experiment rooms will be replaced at least 4 times per hour. This implies
-that 2 hours after an emitting source has been removed from the room we can be
-confident that the room is clean of ethanol traces.
-
-15 trials will be run for each of the two planners being tested. The trials will
-be divided among the three rooms. The test matrix for the experiment is
-presented in Table~\ref{tab:test-matrix}. 
-
-\begin{table}
-\caption{Test Matrix} 
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-\textbf{Planning Algorithm} &
-\begin{tabular}{c}\includegraphics[width=\tablewidth]{img/D461.pdf} \\
-D461 \end{tabular} &
-\begin{tabular}{c}\includegraphics[width=\tablewidth]{img/D463.pdf} \\
-D463 \end{tabular} &
-\begin{tabular}{c}\includegraphics[width=\tablewidth]{img/G449.pdf} \\
-G449 \end{tabular} \\ \hline
-Simple Gradient Descent &  
-\emph{mean time } & \emph{mean time } & \emph{mean time }\\\hline
-Stochastic Gradient Descent & \emph{mean time } & \emph{mean time }  & \emph{mean time} \\ \hline
-\end{tabular}
-\end{center}
-\label{tab:test-matrix}
-\end{table}
+When the location of the source was changed between trials, a waiting period of at least 2 hours
+was allowed, during which no ethanol was exposed. According to regulations regarding the air
+cycle rate for an office building, it was determined that the air in
+the test room was replaced 4 times per hour.  Thus, it was assumed that a 2 hour waiting
+period cleaned the room of ethanol traces.
 
 \subsubsection{Data Acquisition}
-At a rate of 1 Hz, the software platform will record and
-timestamp all chemical sensor readings, robot position, planner commands, and
-posterior estimates. The start time of the trial will be recorded
-in the log file, and the mean and covariance of every posterior
-distribution will be timestamped and recorded as well, the log files will hold all the
-information necessary to extract localization time for each trial.
-Given the mean and covariance of a multivariate Gaussian
-posterior, by using a multivariate normal cumulative distribution
-function we can calculate the percentage of the posterior probability
-mass that falls within a circle of radius 0.2 m about the true source
-location. We can then find the timestamp correlated with the first
-posterior to have 90\% of its probability mass fall within 0.2 m of
-the source location, and find the localization time for the trial by
-subtracting the trial start time.
+All of the particles of the particle filter located less than a distance of 1 meter from the
+true source location were considered to be within the ``localization
+radius.''  The sum of the probabilities of the particles within the
+localization radius at the beginning and end of each trial was used to
+calculate the mean localization rate achieved in that trial by the
+process described in section \ref{sec:results}.
+
+The probabilities of all of the particles were logged each time the
+posterior was updated, and the initial and final sums of probability
+mass within the localization radius were calculated after the
+end of each trial. Raw chemical sensor readings, robot position, planner commands, and
+posterior estimates were also logged at a rate of 1 hz.
 
 \newpage
 
