@@ -1,4 +1,4 @@
-\documentclass[submit]{aiaa-pretty-modified}
+\documentclass[submit, 12pt]{aiaa-pretty-modified}
 
 \usepackage{graphicx}
 \usepackage{array}
@@ -9,7 +9,11 @@
 \usepackage[header,page]{appendix}
 \usepackage{placeins}
 \usepackage{pdfpages}
-\usepackage{placeins}
+\usepackage[notbib]{tocbibind}
+\usepackage{setspace}
+\usepackage[tocindentauto]{tocstyle}
+
+\usetocstyle{standard}
 
 \title{\textbf{Planning Algorithms for Indoor Robotic Odor
     Localization}\\
@@ -41,6 +45,10 @@
   \fi
 }
 
+% \makeatletter
+%   \renewcommand\l@subsection{\@dottedtocline{2}{1.5em}{3em}}
+% \makeatother
+  
 \begin{document}
 \maketitle
 
@@ -49,6 +57,15 @@
 \tableofcontents
 
 \newpage
+
+\listoffigures
+
+\newpage
+
+\listoftables
+
+\newpage
+\onehalfspace
 
 \section{Introduction}
 
@@ -78,17 +95,13 @@ use of gradient descent approaches to autonomous path planning.
 \label{sec:hos}
 \subsection*{Hypothesis} 
 The mean localization rate of a 45-minute two-dimensional search by an
-autonomous ground robot equipped with a chemical vapor sensor will be
-20 percent greater using a stochastic planner than using a simple gradient descent planner.
-\footnote{
-  A simple gradient descent algorithm will
-  take samples from regions neighboring the robot’s current location, 
-  and will always move in the direction of the neighboring region with
-  the strongest reading. A stochastic algorithm will add some randomness
-  to the choice of the next location the robot will move towards,
-  allowing the planning algorithm to gain a more complete representation
-  of the search space, at the potential cost of taking some unnecessary
-  measurements.}
+autonomous ground robot equipped with a chemical vapor sensor will be 20 percent
+greater using a stochastic planner than using a simple gradient descent planner.
+\footnote{ The greedy gradient descent algorithm always moves the robot in the
+  direction of the best source estimate. A stochastic algorithm moves to a
+  location randomly sampled from source estimate probability distribution,
+  allowing the planning algorithm to gain a more complete representation of the
+  search space, at the potential cost of taking some unnecessary measurements.}
 
 \subsection*{Objective}
 Equip a ground robot furnished by the CSAIL Robust Robotics Group with an Alpha MOS NEEM chemical sensor, implement the planners on the robot's software platform, and assess the mean localization rate of a cup of ethanol in a closed room.
@@ -245,7 +258,7 @@ Figure \ref{fig:acquisition}.
 \begin{figure}
 \begin{center}
 \includegraphics[width=6in]{img/acquisition.pdf}
-\caption{The components of the system, and the paths along which data is
+\caption[Data acquisition flowchart]{The components of the system, and the paths along which data is
   communicated. Messages are passed among different components of the robot's
   software using the LCM protocol.  Sensor readings include a raw
   chemical concentration value.  The
@@ -257,30 +270,10 @@ Figure \ref{fig:acquisition}.
 \end{center}
 \end{figure}
 
-\subsubsection{Planner}
-
-We will implement our two gradient descent planning algorithms as
-follows: let $\hat{\vec{x_s}}$ be our current best estimate of the
-source location, 
-\begin{equation}
-\hat{\vec{x_s}} = E[P(\vec{x_s}|c_1, \dots ,c_{n},\vec{x_r})]
-\end{equation}
-The simple gradient descent algorithm will move 0.5 meters in the
-direction of the best source estimate $\hat{\vec{x_s}} - \vec{x_r}$.
-The stochastic gradient descent algorithm will move in the direction
-$\hat{\vec{x_s}} - \vec{x_r} + \vec{\epsilon}$, where $\vec{\epsilon}$
-is a normally distributed random variable:
-\begin{equation}
-E[\vec{\epsilon}] = \vec{0} \qquad Cov[\vec{\epsilon}] = 
-\left[\begin{array}{cc} \sigma^2 & 0 \\ 0 & \sigma^2 \end{array}\right]
-\end{equation}
-The robot will continually take measurements at a data rate of 1 Hz, issuing a
-new command after receiving each reading.
-
 \subsubsection{Estimator}
 
-We will obtain the our best source location estimate through the
-Bayesian inference technique of an Extended Kalman Filter (EKF)\cite{welch1995}. Given
+The estimate of the source location was obtained using a particle
+filter\cite{maskell2001tutorial}. Given
 a multivariate Gaussian prior distribution for the state, a command
 given to the robot, and a measurement, the EKF will update this
 probability distribution and return a multivariate Gaussian posterior
@@ -300,6 +293,26 @@ the source location in order to get the best source location estimate $\vec{x_s}
 \end{equation}
 This best source location estimate can be passed to the planner, so
 the planner can choose the next location to move to.
+
+\subsubsection{Planner}
+
+The two planning algorithms as
+follows: let $\hat{\vec{x_s}}$ be our current best estimate of the
+source location, 
+\begin{equation}
+\hat{\vec{x_s}} = E[P(\vec{x_s}|c_1, \dots ,c_{n},\vec{x_r})]
+\end{equation}
+The simple gradient descent algorithm will move 0.5 meters in the
+direction of the best source estimate $\hat{\vec{x_s}} - \vec{x_r}$.
+The stochastic gradient descent algorithm will move in the direction
+$\hat{\vec{x_s}} - \vec{x_r} + \vec{\epsilon}$, where $\vec{\epsilon}$
+is a normally distributed random variable:
+\begin{equation}
+E[\vec{\epsilon}] = \vec{0} \qquad Cov[\vec{\epsilon}] = 
+\left[\begin{array}{cc} \sigma^2 & 0 \\ 0 & \sigma^2 \end{array}\right]
+\end{equation}
+The robot will continually take measurements at a data rate of 1 Hz, issuing a
+new command after receiving each reading.
 
 \subsection{Experimental Process}
 \subsubsection{Test Environment}
@@ -481,7 +494,8 @@ Greedy Planner & 1.0296 & 0.3333\\
 Stochastic Planner& 1.3994 &0.1993\\
 \hline
 \end{tabular}
-\caption{Students t-test for an increase in the sum of probability
+\caption[Student's t-test on probability mass increase inside
+localization radius.]{Student's t-test for an increase in the sum of probability
   mass inside the localization radius over the time of a trial.
   These results show no statistically significant increase. \label{tab:nofind} }
 \end{center}
@@ -529,7 +543,7 @@ the smallest convex shape that includes all the measurement locations.
 \begin{center}
 \fbox{
 \includegraphics[width=6in]{img/paths.pdf}}
-\caption{Comparison of robot paths and resulting final particle filter
+\caption[Final posterior estimates for source locations 7 and 8]{Comparison of robot paths and resulting final particle filter
   probability distributions using the greedy planner (left) and the
   stochastic planner (right) for source locations 7 (top) and 8 (bottom). The
   robot paths are shown in black, where each corner represents a
@@ -609,7 +623,7 @@ $KL_{stochastic}$ & 0.0013 & 0.0082 & 0.0017 & 0.0015 & 0.0030 & 0.0019 & 0.0012
 $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.4463 & 4.3945 & 0.0052 & 0.6107 & 0.4157 & 2.7365 & 0.1711 & 0.1990 & 0.1282 \\
 \hline
 \end{tabular}
-\caption{Kullback-Leibler divergence of the final particle filter
+\caption[KL divergence of posterior distribution from a uniform distribution]{Kullback-Leibler divergence of the final particle filter
   probability distribution from the initial uniform particle
   probability distribution.  This is a measure of how much
   information about the environment was gained by the system in each trial. }
@@ -680,15 +694,14 @@ $D_{stoch}$ & 3.0180 & 4.4869 & 3.0832 & 3.9119 & 3.8311 & 3.2875 & 3.5517 & 3.4
 $\frac{D_{stoch}}{D_{greedy}}$ & 0.9853 & 0.9940 & 1.4053 & 1.0020 & 0.9971 & 1.0017 & 0.9920 & 0.9888 & 0.9979 \\
 \hline
 \end{tabular}
-\caption{Weighted distance of the posterior particle distribution from the true
+\caption[Probabilistically weighted distance from the posterior estimate to the
+source location]{Weighted distance of the posterior particle distribution from the true
   source location. The weighted distance is the average of the distances from
   each particle location to the source location weighted by the probability
   mass of the posterior held by that particle.}
 \label{tab:weighted-distance}
 \end{center}
 \end{table}
-
-\newpage
 
 \section{Summary and Conclusion}
 
