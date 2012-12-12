@@ -10,8 +10,9 @@
 \usepackage{placeins}
 \usepackage{pdfpages}
 
-\title{\textbf{Planning Algorithms for Indoor Robotic Odor Localization}
-\\  16.622 Final Report}
+\title{\textbf{Planning Algorithms for Indoor Robotic Odor
+    Localization}\\
+{16.622 Final Report}}
 
 \date{\today}
 
@@ -89,7 +90,7 @@ autonomous ground robot equipped with a chemical vapor sensor will be
   measurements.}
 
 \subsection*{Objective}
-Equip a ground robot furnished by the CSAIL Robust Robotics Group with an Alpha MOS NEEM chemical sensor, implement the planners on the robot’s software platform, and assess the mean localization rate of a cup of ethanol in a closed room.
+Equip a ground robot furnished by the CSAIL Robust Robotics Group with an Alpha MOS NEEM chemical sensor, implement the planners on the robot's software platform, and assess the mean localization rate of a cup of ethanol in a closed room.
 
 \subsection*{Success Criteria} 
 Determine the difference in mean localization rate to a sufficient precision such that the hypothesis can be assessed.
@@ -105,7 +106,7 @@ algorithm that decides the location of the next measurement given the current
 estimate and confidence interval of the source location.
 
 Review of previous work in the field of robot odor localization helped to select
-this experiment’s test environment of windless indoor rooms with uncommon
+this experiment's test environment of windless indoor rooms with uncommon
 geometries. In addition, it provided the basis for the selection of a Bayesian inference
 estimator and a Gaussian model to be selected as parameters of the experiment, and
 motivated the selection of a simple gradient descent planner and a stochastic
@@ -164,7 +165,7 @@ Planners that were shown to be effective in turbulent air environments were
 mainly derived from observations of the behavior of biological organisms.
 \cite{ferri} For example, Ferri et al. attempted to mimic the circling behavior
 of the Luna Moth in its search for a mate in one planner, and the weighted
-random walk exhibited by the chemotaxis3 of the E. coli bacterium in another.
+random walk exhibited by the chemotaxis of the E. coli bacterium in another.
 \cite{ferri} No documentation of simple gradient descent using a single sensor
 or other simple statistically motivated planners as applied to robot odor
 localization was found. Using simple gradient descent is attractive because of
@@ -173,34 +174,34 @@ gradient descent planner may be prone to confusion by temporary local maxima of
 the chemical concentration. An alternative planner that may perform better in
 the turbulent environment without requiring a complicated model is based on
 stochastic gradient descent, which adds randomness to the gradient vector when
-prescribing the direction of motion. \cite{bottou} This randomness helps avoid
+prescribing the direction of motion. \cite{bottou} This randomness may
+help avoid
 the issues caused by temporary local maxima.
 
 \section{Description of Experiment}
 \subsection{Experimental Overview}
-In this experiment two different planning algorithms will be tested using the
+A simple gradient descent (greedy) planning aglorithm and a
+stochastic planning algorithm were tested using the
 same model and estimation method. A sensor capable of identifying the
-concentration of ethanol in the surrounding air will be mounted on a ground
-robot. The mean time the robot takes to localize the ethanol source using a
-stochastic gradient descent planning algorithm will be compared to the mean time
-taken using a simple gradient descent planning algorithm.
+concentration of ethanol in the surrounding air was mounted on a ground
+robot. A plate of ethanol was placed in a test room, and the mean rate at which the robot localized the ethanol source
+using the greedy planner was compared to the mean rate using the
+stochastic planner.
 
 \subsection{Test Apparatus}
 \label{sec:design}
 \subsubsection{Robot Hardware}
 
-An Alpha MOS NEEM chemical sensor (Figure~\ref{fig:sensor}) will be attached to
-the mounting pole of the Envoy robotic platform of the Robust Robotics Group.
-The robot and the mounting pole can be seen in Figure~\ref{fig:wheelchair}. All
-data processing will occur on a laptop mounted on the robot. The laptop will
-also be responsible for motion commands and navigation.
+The Alpha MOS NEEM chemical sensor shown in figure \ref{fig:sensor} was
+attached to the Envoy robotic platform of the Robust Robotics Group,
+as illustrated in figure \ref{fig:wheelchair}.  The sensor was mounted
+10 inches above the ground.  A laptop computer
+mounted on the robot performed all real-time computation and data collection.
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=5in]{img/wheelchair.pdf}
-\caption{Envoy robotic wheelchair platform and mounting pole. The chair will be
-  removed from the robotic platform to minimize disturbances of the air created
-  by the robot.}
+\caption{Envoy robotic wheelchair platform with Alpha MOS Neem Sensor.}
 \label{fig:wheelchair}
 \end{center}
 \end{figure}
