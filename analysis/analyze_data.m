@@ -24,8 +24,10 @@ end
 
 
 %% calculate ratios and statistics on ratios
-ratio = stochastic ./ greedy;
-rbar = mean(ratio); % population mean
+stochastic
+greedy
+ratio = stochastic ./ greedy
+rbar = mean(ratio) % population mean
 n = length(ratio);
 s = std(ratio) / sqrt(n); % sample standard deviation of the mean
 
@@ -90,9 +92,9 @@ end_time = time(end_ind);
 % calculate the actual time elapsed during the trial up to the measurement
 % point.  Measured in minutes
 delta_t = (end_time - begin_time)*1e-6/60;
-if delta_t > trial_time + 5
-    delta_t = trial_time;
-end
+%if delta_t > trial_time + 5
+%    delta_t = trial_time;
+%end
 
 % Get particle probabilities at the trial end time:
 particles = [particle_log(:,1), particle_log(:,2),particle_log(:,end_ind+2)];

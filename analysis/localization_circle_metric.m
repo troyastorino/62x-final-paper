@@ -1,4 +1,4 @@
-function [ val ] = localization_circle_metric(final_particles, chem_pose, delta_t)
+function [ val, init_mass, final_mass ] = localization_circle_metric(final_particles, chem_pose, delta_t)
 %UNTITLED9 Summary of this function goes here
 %   Detailed explanation goes here
 

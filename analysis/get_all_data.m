@@ -4,6 +4,11 @@ function [ stochastic, greedy ] = get_all_data( use_third_trial )
 %% Read in all the data
 for i=1:18
     [ particle_log, chem_pose, time, pose ] = get_data( i );
+    if (i==11)
+        pose(9,:) = [];
+        time(9) = [];
+        particle_log(:,11) = [];
+    end
     values(i) = struct('particle_log', particle_log, 'chem_pose', chem_pose, ...
         'time', time, 'pose', pose);
 end

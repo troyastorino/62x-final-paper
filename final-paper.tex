@@ -393,6 +393,8 @@ posterior to have 90\% of its probability mass fall within 0.2 m of
 the source location, and find the localization time for the trial by
 subtracting the trial start time.
 
+\newpage
+
 \section{Results}
 \label{sec:results}
 The results of this experiment contradict the hypothesis presented in
@@ -430,12 +432,13 @@ $r_{greedy}$ & 0.0259 & 0.0286 & 0.1656 & 0.0282 & 0.0298 & 0.0286 & 0.0303 & 0.
 \hline
 $m_{0_{stoch}}$ & 0.0502 & 0.0450 & 0.0500 & 0.0500 & 0.0497 & 0.0484 & 0.0493 & 0.0506 & 0.0490 \\
 \hline
-$m_{f_{stoch}}$ & 0.0521 & 0.0483 & 0.0525 & 0.0491 & 0.0480 & 0.0487 & 0.0495 & 0.0515 & 0.0491 \\
+$m_{f_{stoch}}$ & 0.0521 & 0.0483 & 0.0525 & 0.0491 & 0.0480 & 0.0488 & 0.0495 & 0.0515 & 0.0491 \\
 \hline
-$r_{stoch}$ & 0.0295 & 0.0296 & 0.0299 & 0.0279 & 0.0268 & 0.0288 & 0.0280 & 0.0285 & 0.0280 \\
+$r_{stoch}$ & 0.0295 & 0.0296 & 0.0299 & 0.0279 & 0.0268 & 0.0272 & 0.0280 & 0.0285 & 0.0280 \\
 \hline
 \hline
-$R = \frac{rate_{stoch}}{rate_{greedy}}$  & 1.1371 & 1.0345 & 0.1807 & 0.9869 & 0.9014 & 1.0056 & 0.9251 & 1.0164 & 0.9564\\
+$R = \frac{rate_{stoch}}{rate_{greedy}}$  & 1.1371 & 1.0345 & 0.1807 & 0.9869 &
+0.9014 & 0.9505  & 0.9251 & 1.0164 & 0.9564\\
 \hline
 \end{tabular}
 \caption{Experimental Data \label{tab:data} }
@@ -443,15 +446,15 @@ $R = \frac{rate_{stoch}}{rate_{greedy}}$  & 1.1371 & 1.0345 & 0.1807 & 0.9869 & 
 \end{table}
 
 The mean $R_{mean}$ of the ratios $R$ for the nine source locations is equal to
-$R_{mean} = 0.905$ and was used to assess the hypotheis as false. The
-90\% confidence interval on $R_{mean}$ is $(0.7313,1.0787)$.
+$R_{mean} = 0.8989$ and was used to assess the hypotheis as false. The
+90\% confidence interval on $R_{mean}$ is $(0.7263, 1.0714)$.
 
 \subsection{Statistical Hypothesis Assessment}
 A one-sided Student's t-test with 8 degrees of freedom on alternative
-hypothesis $R_{mean} > 1.2$ gave a t-statistic of $-3.1591$ with a
-corresponding p-value of $0.9933$.  Thus, the probabilty of
-obtaining a measured ratio greater than or equal to $R_{mean} = 0.905$
-is $99.3\%$ under the null hypothesis ($R_{mean} = 1.2$), so the
+hypothesis $R_{mean} > 1.2$ gave a t-statistic of $-3.2466$ with a
+corresponding p-value of $0.9941$.  Thus, the probabilty of
+obtaining a measured ratio greater than or equal to $R_{mean} = 0.8989$
+is $99.4\%$ under the null hypothesis ($R_{mean} = 1.2$), so the
 alternative hypothesis $R_{mean} > 1.2$ must be rejected.  Figure
 \ref{fig:killer} shows a graphical representation of the experimental
 data and the rejected hypothesis.
@@ -472,7 +475,7 @@ In addition to the assessment of the hypothesis, a two-sided Student's
 t-test with 8 degrees of freedom was used on the hypothesis $R_{mean}
 = 1$ to determine whether there was any statistically significant
 difference in the mean localization rates.  This test gave
-a t-statistic of $-1.0174$ and a p-value of $0.3388$, showing that
+a t-statistic of $-1.0903$ and a p-value of $0.3073$, showing that
 there is no statistically significant difference in the mean localization
 rate achieved with the stochastic planner and the rate achieved with
 the simple gradient descent planner.
@@ -499,7 +502,7 @@ not significant at a 10\% level.
 \hline \hline
 Greedy Planner & 1.0296 & 0.3333\\
 \hline
-Stochastic Planner& 1.3921 &0.2014\\
+Stochastic Planner& 1.3994 &0.1993\\
 \hline
 \end{tabular}
 \caption{Students t-test for an increase in the sum of probability
@@ -542,9 +545,9 @@ qualitatively by the comparison of robot paths in figure \ref{fig:paths} and
 quantitatively in table \ref{tab:paths}, where $A_{greedy}$ and
 $A_{stoch}$ are the percentage of the area of the test room ``covered''
 using the greedy planner and the stochastic planner respectively.  For
-the purpose of this analysis, all of the area within 1 meter of the
-location where any concentration measurement was taken during a trial
-is considered to be ``covered'' in that trial.
+the purpose of this analysis, the covered area is calculated by area the convex hull
+of the set of locations that the robot took measurements at, i.e., the area of
+the smallest convex shape that includes all the measurement locations.
 
 \begin{figure}
 \begin{center}
@@ -572,12 +575,13 @@ different final particle filter probability distributions.}
 \hline
  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
 \hline \hline
-$A_{greedy}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+$A_{greedy}$ & 0.1006 & 0.0750 & 0.237 & 0.0775 & 0.0802 & 0.1042 & 0.0669 & 0.0561 & 0.0612 \\
 \hline
-$A_{stoch}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+$A_{stoch}$ & 0.4940 & 0.4523 & 0.5405 & 0.5278 & 0.5032 & 0.5717 & 0.4930 & 0.5469 & 0.5311 \\
 \hline
 \end{tabular}
-\caption{Experimental Data \label{tab:paths} }
+\caption{Percentage of possible area covered by the different planning algorithms.}
+\label{tab:paths}
 \end{center}
 \end{table}
 
@@ -622,27 +626,93 @@ distribution in each trial is shown in table \ref{tab:allinfo}.
 \hline
  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
 \hline \hline
-Greedy KL divergence & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+$KL_{greedy}$  & 0.0029 & 0.0019 & 0.3156 & 0.0024 & 0.0071 & 0.0007 & 0.0070 & 0.0039 & 0.0085 \\
 \hline
-Stochastic KL divergence & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+$KL_{stochastic}$ & 0.0013 & 0.0082 & 0.0017 & 0.0015 & 0.0030 & 0.0019 & 0.0012 & 0.0008 & 0.0011 \\
 \hline
-Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+$\frac{KL_{stoch}}{KL_{greedy}}$ & 0.4463 & 4.3945 & 0.0052 & 0.6107 & 0.4157 & 2.7365 & 0.1711 & 0.1990 & 0.1282 \\
 \hline
 \end{tabular}
 \caption{Kullback-Leibler divergence of the final particle filter
   probability distribution from the initial uniform particle
   probability distribution.  This is a measure of how much
-  information about the environment was gained by the system in each trial. \label{tab:allinfo} }
+  information about the environment was gained by the system in each trial. }
+\label{tab:allinfo}
 \end{center}
 \end{table}
 
 The mean of the ratios $\frac{KL_{stoch}}{KL_{greedy}}$ over the 9
 source locations is equal to $mean(\frac{KL_{stoch}}{KL_{greedy}}) =
-TROYFILLTHISIN$.  A two-sided Student's t-test with the null hypothesis
+1.0119$.  A two-sided Student's t-test with the null hypothesis
 $mean(\frac{KL_{stoch}}{KL_{greedy}}) = 1$ gave a t-statistic of
-$-0.3851$ and a p-value of $0.7102$.  This 
+$0.0235$ and a p-value of $0.9818$.  This shows there is no significant
+difference in the information gain between the two.
+
+The important metric is not general information gain, however, but is the gain
+of information about the source location. There are other metrics that use the
+information from all of the particles to measure how well the source location
+has been estimated. 
+
+Table \ref{tab:weighted-distance} shows the probabilistic weighted distances
+of the true source location to the posterior estimate.  The weighted distance is
+calculated by taking the weighted average distance from each particle location
+to the source location, where the weighting for each particle is determined by the
+probability mass held by the particle at the end of a trial.  A two-sided
+Student's t-test on the ratio of the stochastic to the greedy weighted distance
+shows that the ratio is not statistically significantly different from 1,
+resulting in a t-statistic of $0.8862$ and a p-value of $0.4014$. If, however,
+we look at all the source locations where one of the planners did not
+definitively find the source, i.e. all the source locations other than source
+location 3, the ratio of the weighted distances is significantly different from
+1. Running the same Student's t-test over the other 8 source location gives a
+t-statistic of $-2.4529$ and a p-value of $0.0439$. This is statistically
+significant difference from 1 at the $5\%$ level. This difference is not
+overwhelming, as the mean ratio of the weighted distances is $0.9948$, but at a
+minimum this shows that by covering more of the search space the stochastic planner
+lowers the probability of more areas being potential source locations.
+
+% \begin{table}[htb]
+% \begin{center}
+% \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+% \hline
+%  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+% \hline \hline
+% Greedy KL divergence & 1.3819 & 1.8294 & 0.6025 & 1.4937 & 1.4636 & 1.3319 & 1.3668 & 1.3803 & 1.5682 \\
+% \hline
+% Stochastic KL divergence & 1.2861 & 1.7989 & 1.2882 & 1.5312 & 1.5107 & 1.3297 & 1.3736 & 1.3431 & 1.5974 \\
+% \hline
+% Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0322 & 0.9984 & 1.0050 & 0.9730 & 1.0186 \\
+% \hline
+% \end{tabular}
+% \caption{Kullback-Leibler divergence of the final particle filter
+%   posterior distribution from an 'ideal' Gaussion posterior distribution . }
+% \label{tab:kl-ideal}
+% \end{center}
+% \end{table}
 
 
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+\hline
+ Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline \hline
+$D_{greedy}$ & 3.0630 & 4.5139 & 2.1940 & 3.9041 & 3.8425 & 3.2819 & 3.5805 & 3.4443 & 4.0892 \\
+\hline
+$D_{stoch}$ & 3.0180 & 4.4869 & 3.0832 & 3.9119 & 3.8311 & 3.2875 & 3.5517 & 3.4059 & 4.0805 \\
+\hline
+$\frac{D_{stoch}}{D_{greedy}}$ & 0.9853 & 0.9940 & 1.4053 & 1.0020 & 0.9971 & 1.0017 & 0.9920 & 0.9888 & 0.9979 \\
+\hline
+\end{tabular}
+\caption{Weighted distance of the posterior particle distribution from the true
+  source location. The weighted distance is the average of the distances from
+  each particle location to the source location weighted by the probability
+  mass of the posterior held by that particle.}
+\label{tab:weighted-distance}
+\end{center}
+\end{table}
+
+\newpage
 
 \section{Summary and Conclusion}
 
