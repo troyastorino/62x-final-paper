@@ -289,14 +289,15 @@ the estimator's measurement model. The measurement model used has concentration
 measurements distributed normally: 
 \[c \sim \mathcal{N}\left(\bar{c}(x_s,x_r), \sigma \right)\]
 \[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{\abs{x_r - x_s}^2}{\nu^2}\right]} + k\]
-where $x_r$ is the robot's location when the measurement is taken.  The
-parameter values fitted from preliminary concentration data is listed in Table \ref{tab:estimator-parameters}.
-The dynamics of indoor chemical dispersion are complex, and this simple
-measurement model was chosen knowing that it did not capture many of the
-intricacies of the system. This was considered acceptable because it was thought
-that the estimation technique would be robust enough to be successful while
-treating the deviations of the true dynamics from this model as measurement
-noise.
+where $x_r$ is the robot's location when the measurement is taken. The parameter
+values fitted from preliminary concentration data is listed in Table
+\ref{tab:estimator-parameters}. The dynamics of indoor chemical dispersion are
+complex, and this simple measurement model was chosen knowing that it did not
+capture many of the intricacies of the system, intricacies including asymmetric
+diffusion, time variation, convection, and sensor variability. This was
+considered acceptable because it was thought that the estimation technique would
+be robust enough to be successful while treating the deviations of the true
+dynamics from this model as measurement noise.
 
 \begin{table}
 \caption[Estimator parameters]{Particle filter and measurement model parameters.}
