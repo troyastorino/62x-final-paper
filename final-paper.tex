@@ -118,6 +118,7 @@ Equip a ground robot furnished by the CSAIL Robust Robotics Group with an Alpha 
 Determine the difference in mean localization rate to a sufficient precision such that the hypothesis can be assessed.
 
 \section{Literature Review}
+\label{sec:lit-review}
 Review of previous work in the field of robotic odor localization helped to select
 this experiment's test environment of windless indoor rooms with uncommon
 geometries. In addition, it provided the basis for the selection of a Bayesian inference
@@ -532,7 +533,8 @@ Stochastic Planner& 1.3994 &0.1993\\
 \caption[Student's t-test on probability mass increase inside
 localization radius.]{Student's t-test for an increase in the sum of probability
   mass inside the localization radius over the time of a trial.
-  These results show no statistically significant increase. \label{tab:nofind} }
+  These results show no statistically significant increase.}
+\label{tab:nofind}
 \end{center}
 \end{table}
 
@@ -788,9 +790,103 @@ Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0
 % lowers the probability of more areas being potential source locations.
 
 
+\subsection{Future Work}
+The experimental results show that neither planner was faster at
+localizing the source. Neither planner was faster, however, because outside of
+one trial neither planner localized the source.  At a minimum, the results show
+that, of the components employed in this experiment, estimation is more critical
+to mission success than planning. 
+
+There are many avenues for improvements to estimation. The simplest would
+require only choosing parameters for the current estimator. The data collected
+while running the trials can be combined into a much larger dataset than the
+preliminary one that was used to fit parameter values for the measurement model.
+Additionally, the value for the measurement noise, $\sigma$ in Table
+\ref{tab:estimator-parameters}, was set to a value an order of magnitude larger
+than the value the initial fitting indicated, because in the preliminary trials
+the original sigma value caused the probability estimate to collapse too quickly
+to the wrong source location. As the results in Table \ref{tab:nofind} show,
+over the course of the trials the probability mass did not change in a
+statistically significant manner, meaning that the posterior estimate was likely
+too slow in collapsing.  If the posterior was indeed too slow to collapse, the
+measurement noise should be set to a smaller value. 
+
+Rigorous characterization of the sensor dynamics could also lead to a more
+effective measurement model. As previously noted, the baseline value of sensor
+readings changed significantly across testing days. Understanding and accounting
+for the factors that caused these changes could improve the performance of the
+estimator. It was also observed that the sensor would take 20 to 30 minutes
+beyond the time necessary for the sensor chamber to heat to the proper
+temperature for the readings stabilize at a baseline value. Understanding and
+characterizing this behavior, along with any other potential time-varying
+behavior of the sensor, could again improve estimator performance. Finally, an
+accurate mapping from sensor readings to chemical concentrations could be
+necessary for more sophisticated measurement models.  This mapping could be
+experimentally determined by recording sensor readings over time while the sensor
+is exposed to a known concentration level. This could be achieved in a small, sealed
+container inside of which a known quantity of ethanol could be allowed to
+evaporate. 
+
+Dispersion dynamics holds the widest range of potential estimation
+improvements, though many of these improvements are perhaps more difficult to
+implement than the improvements mentioned previously.  The likelihood function
+is based on a model of diffusion, but as discussed in Section
+\ref{sec:lit-review}, the effect of convection dominates that of diffusion for
+chemical dispersion in an indoor environment. There are many ways to incorporate
+convective effects into the measurement function, covering a large range in
+degree of difficulty. The most accurate description of the system would likely
+require methods of computation fluid dynamics dependent on knowledge of the room
+shape and ventilation locations. These computations, however, would likely be
+too resource intensive to run in real-time on a robotic platform, and the
+dependence on location specific features potentially loses generality of the
+solution. The latter objection could be addressed by integrating the dispersion
+model with online mapping, but this would greatly increase the complexity of the
+solution. Simpler options should likely be exhausted before turning to
+computational fluid dynamics tools.
+
+Simpler models similar to that used in the conducted experiment could still
+reflect that convection is the dominant dispersive effect. For instance, with
+convection being dominant we expect dispersion to be characterized by small
+pockets of high concentration, with these pockets most common and dense near the
+source, and then becoming less common and less dense farther from the source.
+This would lead to rapidly changing, high variance readings near the source
+location, where many dense concentration packets quickly pass over the mouth of
+the sensor, and slower changing, lower variance readings farther from the source
+location. This type of behavior was observed by this experiment, and by Ferri
+et. all in their experiments. \cite{ferri} Considering of this behavior, in
+additional to the average reading value a measurement model could predict the
+variance of sensor readings, or speed of the change in readings, based on
+the distance of the robot from the source.
+
+
 \section{Summary and Conclusion}
+The data collected contradicts the hypothesis that a stochastic planning
+algorithm will be localize a chemical source at a faster rate than a greedy
+planning algorithm. This result is not necessarily reflective of planning being 
+
 
 \section{Acknowledgments}
+We, the authors, would like to thank our faculty advisors, Professors Youssef
+Marzouk and Nicholas Roy, for the large amount of time they invested in teaching
+us the intricacies and facets of the problem space, and for brainstorming
+alongside us to find solutions to the many issues and problems that arose. We
+must also thank doctoral candidates Josh Joseph and Javier Velez for always
+being happy to put aside valuable time to help us work through the challenges we
+encountered, and for teaching us the concepts and techniques we needed for the
+project, and for even helping us implement some of those! Even though we must
+have seemed slow to pick up on many of the ideas, Josh and Javier were always
+understanding, kind, and willing to assist us. Doctoral candidates Xun Huan and
+Sachi Hemachandra also contributed valuable help, and we must thank them for
+their contributions. Finally, we must thank the 62x course staff: Professors
+Brian Wardle, Edward Greiter, and Sheila Widnall, communications instructor
+Jennifer Craig, laboratory instructors Dick Perdichizzi, Dave Robertson, and Tod
+Billings, and of course TA Louis Perna. The course staff was always very
+determined to help us successfully complete our project, and pushed us to
+clearly understand and be able to explain what we were working on. Without their
+insistance on our success, there are many points our project could have
+floundered. We apologize for the difficulties we cause with our project, and
+thank the staff for their extreme willingness to help us work through these
+difficulties to success.
 
 \newpage
 \bibliographystyle{aiaa}
