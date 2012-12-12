@@ -26,8 +26,8 @@
   Advisors:\\ Professor Youssef Marzouk \\ Professor Nicholas
     Roy \\ Josh Joseph \\ Javier Velez \\ Xun Huan \\ Sachi Hemachandra}
 
-\newcommand{\tablewidth}[0]{1in}
-\newcommand{\tablewidthtwo}[0]{3in}
+\newcommand{\Tablewidth}[0]{1in}
+\newcommand{\Tablewidthtwo}[0]{3in}
 \newcount\colveccount
 \newcommand*\colvec[1]{
   \global\colveccount#1
@@ -69,27 +69,33 @@
 
 \section{Introduction}
 
-Odor localization is defined as ``the act of finding the location of a
-volatile chemical source in the environment.''\cite{kowadlo} Odor
-localization is an essential process for many biological systems, from
-moths following pheromone trails to find mates, to bacteria finding a
-food source. The field of robotic odor localization, which has drawn
-much inspiration from biological processes, promises many benefits to
-humanity today. Robots could use odor localization to accomplish tasks
-in environments that would prove dangerous for humans: finding the
-source of toxic chemical leaks for instance, or finding people
-trapped in a collapsed building or mine.
+Robotic odor localization\footnote{Odor localization
+  is defined as ``the act of finding the location of a
+volatile chemical source in the environment.''\cite{kowadlo}} has many real-world applications such as searching for a chemical leak in a
+factory or laboratory, or locating survivors of a natural disaster
+amidst the rubble of collapsed buildings.  These applications require an odor localization robot to operate autonomously
+in an indoor environment.  Indoor air currents caused by
+factors such as
+ventilation and air circulation systems, moving people or machinery,
+convection, and drafts from the outdoors represent a challenge in the
+localization of a chemical vapor source,
+since these effects may become dominant over diffusion and are unpredictable.
 
-There has been little robotic odor localization research done in indoor
-environments. This is due to the difficulty of modeling turbulence in a typical
-room. Accurate prediction of airflow requires precise knowledge of the geometry
-and ventilation of the room, and even if these are known, prediction is too
-computationally expensive to perform in real-time on a robot. Instead of trying
-to precisely predict how airflows affect indoor vapor dispersion, this
-experiment will attempt to use localization algorithms robust enough to overcome
-transient turbulence introduced by indoor air currents. Our experiment will
-address the problem of odor localization in irregularly shaped rooms through the
-use of gradient descent approaches to autonomous path planning.
+The purpose of this experiment was to explore the possibility of
+utilizing a probabilistic approach to robotic odor localization to mitigate the uncertainty
+introduced in the behavior of a chemical vapor plume by indoor
+air currents.  Probabilistic approaches to robotic odor localization may be analyzed as a combination of
+three components: a model, an estimator, and a planner. The model is a
+mathematical function that describes the spatiotemporal variation of the
+chemical concentration. The estimator represents the process by which
+measurements of the chemical concentration are combined with model in real time
+to obtain an estimate of the location of the chemical source. The planner is an
+algorithm that decides the location of the next measurement given the current
+estimate and confidence interval of the source location.
+
+The goal of this experiment was to compare two different planners,
+assuming a Gaussian model and a Bayesian inference estimator as
+parameters of the experiment.
 
 \section{Hypothesis, Objective, Success Criteria}
 \label{sec:hos}
@@ -99,7 +105,7 @@ autonomous ground robot equipped with a chemical vapor sensor will be 20 percent
 greater using a stochastic planner than using a simple gradient descent planner.
 \footnote{ The greedy gradient descent algorithm always moves the robot in the
   direction of the best source estimate. A stochastic algorithm moves to a
-  location randomly sampled from source estimate probability distribution,
+  location randomly sampled from the source estimate probability distribution,
   allowing the planning algorithm to gain a more complete representation of the
   search space, at the potential cost of taking some unnecessary measurements.}
 
@@ -110,16 +116,7 @@ Equip a ground robot furnished by the CSAIL Robust Robotics Group with an Alpha 
 Determine the difference in mean localization rate to a sufficient precision such that the hypothesis can be assessed.
 
 \section{Literature Review}
-Approaches to robotic odor localization may be analyzed as a combination of
-three components: a model, an estimator, and a planner. The model is a
-mathematical function that describes the spatiotemporal variation of the
-chemical concentration. The estimator represents the process by which
-measurements of the chemical concentration are combined with model in real time
-to obtain an estimate of the location of the chemical source. The planner is an
-algorithm that decides the location of the next measurement given the current
-estimate and confidence interval of the source location.
-
-Review of previous work in the field of robot odor localization helped to select
+Review of previous work in the field of robotic odor localization helped to select
 this experiment's test environment of windless indoor rooms with uncommon
 geometries. In addition, it provided the basis for the selection of a Bayesian inference
 estimator and a Gaussian model to be selected as parameters of the experiment, and
@@ -208,8 +205,8 @@ stochastic planner.
 \label{sec:design}
 \subsubsection{Hardware and Robot Platform}
 
-The Alpha MOS NEEM chemical sensor shown in figure \ref{fig:sensor} was
-attached to the Envoy robotic platform of the Robust Robotics Group, illustrated in figure \ref{fig:wheelchair}.  The sensor was mounted
+The Alpha MOS NEEM chemical sensor shown in Figure \ref{fig:sensor} was
+attached to the Envoy robotic platform of the Robust Robotics Group, illustrated in Figure \ref{fig:wheelchair}.  The sensor was mounted
 30 cm above the ground.
 
 
@@ -227,7 +224,7 @@ collection.  The robot used two LIDARs and a pre-loaded map of the
 test room to determine its position.  The position was made available
 as telemetry to the estimator via the LCM messaging protocol at a rate
 of 40 hz as
-illustrated in figure \ref{fig:acquisition}.
+illustrated in Figure \ref{fig:acquisition}.
 
 \begin{figure}
 \begin{center}
@@ -277,27 +274,35 @@ Figure \ref{fig:acquisition}.
 The estimate of the source location was calculated using a particle
 filter\cite{maskell2001tutorial}. The particles were distributed with uniform
 spacing over the area of the test room, and each particle held the posterior
-estimate's belief that the source is at it's location. The particle density is listed in Table
-\ref{tab:estimator-parameters}. After each concentration measurement was
-received, a Bayesian update was performed on each particle: 
+estimate's belief that it was the location of the source. The particle density is given in Table
+\ref{tab:estimator-parameters}. 
+
+Each time the estimator received a
+measurement, a Bayesian update was performed on each particle
+as follows: 
 \[P_n(x_i = x_s) \propto P(c_n | x_i = x_s) P_{n-1}(x_s = x_i)\]
-In the above expression, $P_n(x_i = x_s)$ is the posterior belief that the source is located at the
-$i^{th}$ particle location after the $n^{th}$ update. $c_n$ is the $n^{th}$ concentration
-measurement taken. $P(c_n | x_i = x_s)$ is the likelihood function, the probability that $c_n$ is
-measured given that the source is at the $i^{th}$ particle location according to
-the estimator's measurement model. The measurement model used has concentration
-measurements distributed normally: 
+In the above expression, $P_n(x_i = x_s)$ represents the posterior belief that the source is located at the
+$i^{th}$ particle location after the $n^{th}$ update.  $x_i$
+represents the position of the $i^{th}$ particle, $x_s$ represents the
+position of the source, and $c_n$ represents
+the $n^{th}$ measurement received by the estimator. $P(c_n | x_i =
+x_s)$ is the likelihood function, the probability that the measurement
+is equal to $c_n$ given that the source is at the $i^{th}$ particle location according to
+the measurement model. The measurement model is a normal
+distribution of concentration
+measurements according to: 
 \[c \sim \mathcal{N}\left(\bar{c}(x_s,x_r), \sigma \right)\]
 \[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{\abs{x_r - x_s}^2}{\nu^2}\right]} + k\]
 where $x_r$ is the robot's location when the measurement is taken. The parameter
-values fitted from preliminary concentration data is listed in Table
-\ref{tab:estimator-parameters}. The dynamics of indoor chemical dispersion are
-complex, and this simple measurement model was chosen knowing that it did not
-capture many of the intricacies of the system, intricacies including asymmetric
-diffusion, time variation, convection, and sensor variability. This was
-considered acceptable because it was thought that the estimation technique would
-be robust enough to be successful while treating the deviations of the true
-dynamics from this model as measurement noise.
+values $\sigma$, $q$, $\nu$, and $k$ were fitted from preliminary
+concentration data, and their values are shown in Table
+\ref{tab:estimator-parameters}.  This simple measurement model does
+not consider asymmetric
+diffusion, time variation of diffusion, convection and wind currents, or the dynamic response of the
+sensor, all of which may have been present as disturbances of the test environment. It was believed that the estimation technique would
+cause the posterior estimate to accurately converge to the true source location by
+treating the deviations of real-world
+dynamics from the simple model as measurement noise.
 
 \begin{table}
 \caption[Estimator parameters]{Particle filter and measurement model parameters.}
@@ -315,36 +320,38 @@ $k$ & -10.8534  \\ \hline
 \end{table}
 
 \subsubsection{Planner}
-Two different planning algorithms were compared: a greedy planning algorithm and
-a stochastic planning algorithm. The greedy algorithm always moved the robot
-in the direction of the maximum probability estimate of the source location. The
+This experiment compared a simple gradient
+descent (greedy) planning algorithm and
+a stochastic planning algorithm. The greedy algorithm always chose the
+next measurement location 1.5 m away from the robot's current
+position, in the direction of the maximum probability estimate of the source location. The
 maximum probability estimate was calculated by taking the weighted average of
-all the particle locations:
+all of the estimator particle locations:
 \[\hat{x_s} = \displaystyle\sum\limits_{i} x_i P(x_s = x_i) \]
-The movement distance that the greedy algorithm commanded is listed in Table
-\ref{tab:planner-parameters}.
-
 The stochastic planner sampled a random particle from the posterior probability 
-distribution, and commanded the robot to move to the location of that particle. 
+distribution of the estimator, and chose that particle's location as
+the next measurement location.  After choosing the next measurement
+location, the planner commanded the robot to move to that location.
 
-\begin{table}
-\caption{Planner parameters}
-\begin{center}
-\begin{tabular}{|p{\tablewidthtwo}|p{\tablewidthtwo}|}
-\hline
-Commanded movement distance for greedy algorithm & 1.5 $m$ \\ \hline
-Time to wait for air to settle & 30 $sec$ \\ \hline
-Time to take readings &  30 $sec$ \\ \hline
-\end{tabular}
-\end{center}
-\label{tab:planner-parameters}
-\end{table}
+
+% \begin{table}
+% \caption{Planner parameters}
+% \begin{center}
+% \begin{tabular}{|p{\Tablewidthtwo}|p{\Tablewidthtwo}|}
+% \hline
+% Commanded movement distance for greedy algorithm & 1.5 $m$ \\ \hline
+% Time to wait for air to settle & 30 $sec$ \\ \hline
+% Time to take readings &  30 $sec$ \\ \hline
+% \end{tabular}
+% \end{center}
+% \label{tab:planner-parameters}
+% \end{table}
 
 \subsection{Experimental Process}
 \subsubsection{Test Environment}
 
 The experiment was conducted in a single test room with a floorplan
-shown in figure \ref{fig:testroom}. The ventilation system of the room was undisturbed in order to keep the test
+shown in Figure \ref{fig:testroom}. The ventilation system of the room was undisturbed in order to keep the test
 environment close to that of a typical indoor environment. Parameters of the
 experiment are shown in Table \ref{tab:parameters}.
 
@@ -360,7 +367,7 @@ experiment are shown in Table \ref{tab:parameters}.
 \begin{table}
 \caption{Parameters of the experiment.}
 \begin{center}
-\begin{tabular}{|p{\tablewidthtwo}|p{\tablewidthtwo}|}
+\begin{tabular}{|p{\Tablewidthtwo}|p{\Tablewidthtwo}|}
 \hline
 Chemical used as source & Liquid ethanol, 70\% \\ \hline
 Surface area of chemical vapor source & 0.018 $\text{m}^2$\\ \hline
@@ -386,7 +393,7 @@ the trial.  The duration of each trial was 35 minutes, beginning when
 the first chemical sensor reading was taken. 
 
 Nine sets of two trials were conducted using the nine chemical source
-locations shown in figure \ref{fig:testroom}.  For each source
+locations shown in Figure \ref{fig:testroom}.  For each source
 location, one trial was conducted using the greedy planner, and one trial
 was conducted using the stochastic planner.  When the location of the source was changed between trials, a waiting period of at least 2 hours
 was allowed, during which no ethanol was exposed. According to regulations regarding the air
@@ -418,7 +425,7 @@ and detailed statistical analysis of the data to assess the
 hypothesis.
 
 \subsection{Experimental Data}
-For each of the nine source locations, table \ref{tab:data} shows the
+For each of the nine source locations, Table \ref{tab:data} shows the
 ratio of the localization rate of
 a trial using the stochastic planner to the localization rate of
 a trial using the simple gradient descent (greedy) planner, as well as
@@ -503,7 +510,7 @@ have been
 that the system did not produce a statistically significant increase
 in the sum of probability mass inside the localization radius using
 either planner.  The results of a two-sided Student's t-test on the
-null hypothesis $\frac{m_f}{m_0} = 1$ are given in table
+null hypothesis $\frac{m_f}{m_0} = 1$ are given in Table
 \ref{tab:nofind}.  Although the t-statistics show some increase in the
 sum of probability mass inside the localization radius,
 particularly in the case of the stochastic planner, this increase is
@@ -557,8 +564,8 @@ was expected to gather concentration measurements from a larger
 percentage of the test room area.  In experimental trials with the
 stochastic planner, the system did gather measurements from a larger
 area than in trials with the greedy planner.  This result is shown
-qualitatively by the comparison of robot paths in figure \ref{fig:paths} and
-quantitatively in table \ref{tab:paths}, where $A_{greedy}$ and
+qualitatively by the comparison of robot paths in Figure \ref{fig:paths} and
+quantitatively in Table \ref{tab:paths}, where $A_{greedy}$ and
 $A_{stoch}$ are the percentage of the area of the test room ``covered''
 using the greedy planner and the stochastic planner respectively.  For
 the purpose of this analysis, the covered area is calculated by the
@@ -606,7 +613,7 @@ The differences in the distribution of measurement locations over the test room
 produced by the greedy planner and the stochastic planner caused the
 two planners
 to produce different final particle filter probability distributions,
-as illustrated qualitatively in figure \ref{tab:paths}.  However, as
+as illustrated qualitatively in Figure \ref{tab:paths}.  However, as
 discussed in section \ref{sec:results}, the difference in final
 probability distributions did not produce a statistically significant
 difference in the localization rate.  As discussed earlier in this
@@ -631,7 +638,7 @@ weighted average distance from each particle location to the true
 source location.  The weight of each particle was equal to the
 probability mass held by that particle.  The weighted average distance
 of the final posterior of each trial from the true source location is
-presented in table \ref{tab:weighted-distance}.  $D_{greedy}$ is the final
+presented in Table \ref{tab:weighted-distance}.  $D_{greedy}$ is the final
 weighted average distance using the greedy planner, and
 $D_{stoch}$ is the final weighted average distance using the
 stochastic planner for each source location.  The ratio
@@ -643,7 +650,7 @@ statistically significantly different from 1.  However, if source
 location 3 is ignored on grounds that the trial with the greedy
 planner for this location localizes the source an order of magnitude
 more effectively than any of the other trials, as shown in
-table \ref{tab:data}, the same test
+Table \ref{tab:data}, the same test
 gives a t-statistic of $-2.4529$ and a p-value
 of $0.0439$.  This means that for the trials that seem not to
 localize the source, the stochastic planner may gain more information
@@ -677,7 +684,7 @@ is that the particles far from the true source location have a greater
 impact on the result than particles close to the source location.
 The Kullback - Leibler divergence (KL divergence) of the final
 probability distribution from an ``ideal'' Gaussian posterior about
-the true source location for each trial is shown in table
+the true source location for each trial is shown in Table
 \ref{tab:kl-ideal}.  The KL-divergence metric does not allow particles far from
 the source to be of greater impact than particles close to the source
 like the weighted average distance metric does.  A
@@ -725,7 +732,7 @@ Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0
 % the final particle filter probability distribution from the initial
 % uniform distribution where all of the particles are assigned the same
 % probability.  The KL divergence of the particle filter probability
-% distribution in each trial is shown in table \ref{tab:allinfo}.
+% distribution in each trial is shown in Table \ref{tab:allinfo}.
 
 % \begin{table}[htb]
 % \begin{center}
