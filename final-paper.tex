@@ -226,22 +226,27 @@ illustrated in figure \ref{fig:acquisition}.
 
 \subsubsection{System Control Flow}
 
-Data flow between the components of the system is illustrated in
-Figure \ref{fig:acquisition}. The estimator receives 
-
-
- When the estimator receives each new reading, it updates its model of the
-chemical source's location, and passes the
-parameters of this model to the planner. Using this estimate, the planner then
-decides what direction the robot should move in and commands the robot to move.
+After reaching each measurement location commanded by the planner,
+the robot entered a waiting period of 30 seconds to allow transient
+concentration behaviors and sensor dynamics to attenuate before
+beginning to take readings.  This period was followed by another 30
+second period during which readings of the chemical vapor
+concentration were recorded at a rate of 1 hz.  These readings were
+averaged, and the natural logarithm of the average was passed to the
+estimator.  The estimator then used this value and the current
+position of the robot to update its posterior belief.  This belief was
+then passed to the planner, which issued the next commanded
+measurement location to the robot.  The robot moved to that measurement
+location, and began the process again.  Data flow between the components of the system is illustrated in
+Figure \ref{fig:acquisition}.
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=6in]{img/acquisition.pdf}
 \caption{The components of the system, and the paths along which data is
   communicated. Messages are passed among different components of the robot's
-  software using the LCM protocol. All messages are issued at a rate of 1 Hz.
-  Readings from the sensor include chemical concentration and hydrometry. The
+  software using the LCM protocol.  Sensor readings include a raw
+  chemical concentration value.  The
   posterior distribution is the robot's current best estimate of the chemical
   source's location. Commands are sent in the form of a target position and
   orientation of the robot. Telemetry includes the robot's position, velocity,
