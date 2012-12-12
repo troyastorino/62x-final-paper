@@ -50,7 +50,16 @@
 % \makeatother
   
 \begin{document}
-\abstract{This is the abstract.  Informative, don't you think?}
+\abstract{A simple gradient descent planning
+  algorithm and a stochastic planning algorithm were compared in the
+  context of indoor robotic odor localization.  The planners were tested assuming a Gaussian model and
+  a Bayesian inference estimator on a ground robot equipped with a chemical vapor
+  concentration sensor.  In the task of localizing a single chemical vapor source
+  in a closed room, there was not shown to be a statistically
+  significant difference between the localization rates achieved by
+  the two planners.  It is concluded that further research in the area
+of modeling and estimation techniques for indoor robotic odor
+localization is necessary.}
 \maketitle
 
 
@@ -73,7 +82,7 @@
 
 Robotic odor localization\footnote{Odor localization
   is defined as ``the act of finding the location of a
-volatile chemical source in the environment.''\cite{kowadlo}} has many real-world applications such as searching for a chemical leak in a
+volatile chemical source in the environment.''\cite{kowadlo}} has real-world applications such as searching for a chemical leak in a
 factory or laboratory, or locating survivors of a natural disaster
 amidst the rubble of collapsed buildings.  These applications require an odor localization robot to operate autonomously
 in an indoor environment.  Indoor air currents caused by
@@ -97,7 +106,8 @@ estimate and confidence interval of the source location.
 
 The goal of this experiment was to compare two different planners,
 assuming a Gaussian model and a Bayesian inference estimator as
-parameters of the experiment.
+parameters of the experiment.  No statistically significant difference
+was shown between the performance of the two planners compared.
 
 \section{Hypothesis, Objective, Success Criteria}
 \label{sec:hos}
