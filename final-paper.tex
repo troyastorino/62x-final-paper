@@ -202,13 +202,11 @@ stochastic planner.
 
 \subsection{Test Apparatus}
 \label{sec:design}
-\subsubsection{Robot Hardware}
+\subsubsection{Hardware and Robot Platform}
 
 The Alpha MOS NEEM chemical sensor shown in figure \ref{fig:sensor} was
-attached to the Envoy robotic platform of the Robust Robotics Group,
-as illustrated in figure \ref{fig:wheelchair}.  The sensor was mounted
-10 inches above the ground.  A laptop computer
-mounted on the robot performed all real-time computation and data collection.
+attached to the Envoy robotic platform of the Robust Robotics Group, illustrated in figure \ref{fig:wheelchair}.  The sensor was mounted
+10 inches above the ground.
 
 \begin{figure}
 \begin{center}
@@ -226,13 +224,25 @@ mounted on the robot performed all real-time computation and data collection.
 \end{center}
 \end{figure}
 
+A laptop computer
+mounted on the robot performed all real-time computation and data
+collection.  The robot used two LIDARs and a pre-loaded map of the
+test room to determine its position.  The position was made available
+as telemetry to the estimator via the LCM messaging protocol at a rate
+of 40 hz as
+illustrated in figure \ref{fig:acquisition}.
+
+
+
 \label{sec:mount}
 
-\subsubsection{Data Flow}
+\subsubsection{System Control Flow}
 
-Data flow through the system is illustrated in Figure \ref{fig:acquisition}. The
-chemical sensor passes concentration readings to the estimator at a rate of 1
-Hz. When the estimator receives each new reading, it updates its model of the
+Data flow between the components of the system is illustrated in
+Figure \ref{fig:acquisition}. The estimator receives 
+
+
+ When the estimator receives each new reading, it updates its model of the
 chemical source's location, and passes the
 parameters of this model to the planner. Using this estimate, the planner then
 decides what direction the robot should move in and commands the robot to move.
