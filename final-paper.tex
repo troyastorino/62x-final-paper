@@ -51,8 +51,7 @@ chemical vapor source in a closed room, there was not shown to be a
 statistically significant difference between the localization rates achieved by
 the two planners. It is concluded that further research in the area of modeling
 and estimation techniques for indoor robotic odor localization is necessary, and
-potential directions for future work are discussed.
-
+potential avenues for future work are discussed.
 
 \newpage
 
@@ -71,17 +70,16 @@ potential directions for future work are discussed.
 
 \section{Introduction}
 
-Robotic odor localization\footnote{Odor localization
-  is defined as ``the act of finding the location of a
-volatile chemical source in the environment.''\cite{kowadlo}} has real-world applications such as searching for a chemical leak in a
-factory or laboratory, or locating survivors of a natural disaster
-amidst the rubble of collapsed buildings.  These applications require an odor localization robot to operate autonomously
-in an indoor environment.  Indoor air currents caused by
-factors such as
-ventilation and air circulation systems, moving people or machinery,
-convection, and drafts from the outdoors represent a challenge in the
-localization of a chemical vapor source,
-since these effects may become dominant over diffusion and are unpredictable.
+Robotic odor localization\footnote{Odor localization is defined as ``the act of
+finding the location of a volatile chemical source in the
+environment.''\cite{kowadlo}} has real-world applications such as searching for
+a chemical leak in a factory or laboratory, or locating survivors of a natural
+disaster amidst the rubble of collapsed buildings. These applications require an
+odor localization robot to operate autonomously in an indoor environment. Indoor
+air currents caused by factors such as ventilation and air circulation systems,
+moving people or machinery, convection, and drafts from the outdoors represent a
+challenge in the localization of a chemical vapor source, since these effects
+may become dominant over diffusion and are unpredictable.
 
 The purpose of this experiment was to explore the possibility of
 utilizing a probabilistic approach to robotic odor localization to mitigate the uncertainty
@@ -90,23 +88,23 @@ air currents.  Probabilistic approaches to robotic odor localization may be anal
 three components: a model, an estimator, and a planner. The model is a
 mathematical function that describes the spatiotemporal variation of the
 chemical concentration. The estimator represents the process by which
-measurements of the chemical concentration are combined with model in real time
+measurements of the chemical concentration are combined with the model in real time
 to obtain an estimate of the location of the chemical source. The planner is an
 algorithm that decides the location of the next measurement given the current
-estimate and confidence interval of the source location.
+estimate of the source location.
 
-The goal of this experiment was to compare two different planners,
-assuming a Gaussian model and a Bayesian inference estimator as
-parameters of the experiment.  No statistically significant difference
-was shown between the performance of the two planners compared.
+The goal of this experiment was to compare two different planners, a greedy
+gradient descent planner and a stochastic planner, while using the same
+estimation algorithm.  No statistically significant difference
+was shown between the performance of the two planners.
 
 \section{Hypothesis, Objective, Success Criteria}
 \label{sec:hos}
 \subsection*{Hypothesis} 
 The mean localization rate of a 35-minute two-dimensional search by an
 autonomous ground robot equipped with a chemical vapor sensor will be 20 percent
-greater using a stochastic planner than using a simple gradient descent planner.
-\footnote{ The simple gradient descent (also reffered to as greedy) algorithm always moves the robot in the
+greater using a stochastic planner than using a greedy gradient descent planner.
+\footnote{ The greedy gradient descent algorithm always moves the robot in the
   direction of the best source estimate. A stochastic algorithm moves to a
   location randomly sampled from the source estimate probability distribution,
   allowing the planning algorithm to gain a more complete representation of the
@@ -121,10 +119,9 @@ Determine the difference in mean localization rate to a sufficient precision suc
 \section{Literature Review}
 \label{sec:lit-review}
 Review of previous work in the field of robotic odor localization helped to select
-this experiment's test environment of windless indoor rooms with uncommon
-geometries. In addition, it provided the basis for the selection of a Bayesian inference
+this experiment's test environment of a windless indoor room. In addition, it provided the basis for the selection of a Bayesian inference
 estimator and a Gaussian model as parameters of the experiment, and
-motivated the selection of a simple gradient descent planner and a stochastic
+motivated the selection of a greedy gradient descent planner and a stochastic
 gradient descent planner as interchangeable parts of the localization algorithm
 to be compared for speed.
 
@@ -134,8 +131,8 @@ dispersion in water, air, and soil.\cite{kowadlo} In water and soil, diffusion i
 dominating method by which a chemical emanates from a source and disperses
 through space. In air, where the Reynolds number is higher than in water or
 soil, the behavior of the chemical concentration is affected by the presence of
-turbulent fluid currents in addition to chemical diffusion.\cite{kowadlo} These turbulent
-currents have led most robotic odor localization researchers to introduce an
+turbulence in addition to chemical diffusion.\cite{kowadlo} This turbulence
+ has led most robotic odor localization researchers to introduce an
 artificial wind source when working in air. This negates the effect of the
 turbulence, producing a concentration plume that behaves as a 2-dimensional
 Gaussian function in planes normal to the wind direction, and downwind of the
@@ -153,26 +150,25 @@ Due to the varying effects of turbulence and diffusion discussed in section 3.1,
 accurate modeling of the concentration field is dependent upon the medium and
 environment in which the experiment is conducted. However, many robotic odor
 localization researchers chose not to use a high-fidelity model of the
-concentration field, deeming this level of complexity unnecessary. \cite{kowadlo} Most
-commonly used was a dispersion model based on a Gaussian function. Time
-invariant Gaussian models were used successfully in experiments in water and
-soil, as well as in air with an artificial wind source. \cite{kowadlo} In turbulent air,
-Ferri, et al. successfully used a time invariant monotonic function with a
-single peak at the source location as a concentration model. \cite{ferri} The two
-algorithms tested both successfully localized a dish of ethanol in a mean time
-of less than 10 minutes, beginning an average distance of 1.8m from the source.
-The model used in these localization algorithms is not explicitly described in
-\cite{ferri}, but the assumption that the model is time invariant and monotonic with a
-single peak is a defining component of the successful localization algorithms
-presented in this paper. Based on the success of Ferri, et al., it was
-deemed reasonable to choose a Gaussian model for this
-experiment, and to treat
-the effects of turbulent fluid currents in the air as noise. A Bayesian filter
-was selected as an estimator to account for this noise in determining a
-probability distribution of the source 
-location after each measurement. The
-Bayesian filter is a common technique used in conjunction with Gaussian models
-in robotic localization and is described in \cite{bergman}.
+concentration field, deeming this level of complexity unnecessary.
+\cite{kowadlo} Most commonly used was a dispersion model based on a Gaussian
+function. Time invariant Gaussian models were used successfully in experiments
+in water and soil, as well as in air with an artificial wind source.
+\cite{kowadlo} In turbulent air, Ferri, et al. successfully used a time
+invariant monotonic function with a single peak at the source location as a
+concentration model. \cite{ferri} The two algorithms tested both successfully
+localized a dish of ethanol in a mean time of less than 10 minutes, beginning an
+average distance of 1.8m from the source. The model used in these localization
+algorithms is not explicitly described in \cite{ferri}, but the assumption that
+the model is time invariant and monotonic with a single peak is a defining
+component of the successful localization algorithms presented in this paper.
+Based on the success of Ferri, et al., it was deemed reasonable to choose a
+Gaussian concentration model for this experiment, and to treat the effects of
+turbulence in the air as noise. A Bayesian estimation technique
+was selected to account for this noise in determining a probability distribution
+over the potential source locations after each measurement. Bayesian estimation
+is a common technique used in robotic localization and is described in
+\cite{bergman}.
 
 \subsection{Selection of Planners}
 Planners that were shown to be effective in turbulent air environments were
@@ -180,17 +176,16 @@ mainly derived from observations of the behavior of biological organisms.
 \cite{ferri} For example, Ferri et al. attempted to mimic the circling behavior
 of the Luna Moth in its search for a mate in one planner, and the weighted
 random walk exhibited by the chemotaxis of the E. coli bacterium in another.
-\cite{ferri} No documentation of simple gradient descent using a single sensor
+\cite{ferri} No documentation of greedy gradient descent using a single sensor
 or other simple statistically motivated planners as applied to robot odor
-localization was found. Using simple gradient descent is attractive because of
-its simplicity, but due to the turbulent nature of ambient indoor air, a simple
+localization was found. Using greedy gradient descent is attractive because of
+its simplicity, but due to the turbulent nature of ambient indoor air, a greedy
 gradient descent planner may be prone to confusion by temporary local maxima of
 the chemical concentration. An alternative planner that may perform better in
 the turbulent environment without requiring a complicated model is based on
 stochastic gradient descent, which adds randomness to the gradient vector when
-prescribing the direction of motion. \cite{bottou} This randomness may
-help avoid
-the issues caused by temporary local maxima.
+prescribing the direction of motion. \cite{bottou} This randomness may help
+avoid the issues caused by temporary local maxima.
 
 \section{Description of Experiment}
 \subsection{Experimental Overview}
@@ -249,7 +244,7 @@ the chemical vapor concentration were recorded at a rate of 1 Hz. These readings
 were averaged, and the natural logarithm of the average was passed to the
 estimator. An average reading was used because it was observed that
 there was a variance in the readings measured at any given location on the
-same order of magnitude as the average value. The estimator then used
+same order of magnitude as the average reading value. The estimator then used
 this value and the current position of the robot to update its posterior belief.
 This belief was passed to the planner, which commanded the next measurement
 location to the robot. The robot moved to that location and began the process
@@ -280,30 +275,29 @@ estimate's belief that it was the location of the source. The particle density
 used is given in Table
 \ref{tab:estimator-parameters}. 
 
-Each time the estimator received a
-measurement, a Bayesian update was performed on each particle
-as follows: 
-\[P_n(x_i = x_s) \propto P(c_n | x_i = x_s) P_{n-1}(x_s = x_i)\]
-In the above expression, $P_n(x_i = x_s)$ represents the posterior belief that the source is located at the
-$i^{th}$ particle location after the $n^{th}$ update.  $x_i$
-represents the position of the $i^{th}$ particle, $x_s$ represents the
-position of the source, and $c_n$ represents
-the $n^{th}$ measurement received by the estimator. $P(c_n | x_i =
-x_s)$ is the likelihood function, the probability that the measurement
-is equal to $c_n$ given that the source is at the $i^{th}$ particle location according to
-the measurement model. The measurement model is a normal
-distribution of concentration
-measurements according to: 
+Each time the estimator received a measurement, a Bayesian update was performed
+on each particle as follows:
+\[P_n(x_i = x_s) \propto P(c_n | x_i = x_s) P_{n-1}(x_s = x_i)\] In the above
+expression, $P_n(x_i = x_s)$ represents the posterior belief that the source is
+located at the $i^{th}$ particle location after the $n^{th}$ update. $x_i$
+represents the position of the $i^{th}$ particle, $x_s$ represents the position
+of the source, and $c_n$ represents the $n^{th}$ measurement received by the
+estimator. $P(c_n | x_i = x_s)$ is the likelihood function, the probability that
+the measurement is equal to $c_n$ given that the source is at the $i^{th}$
+particle location according to the measurement model. The measurement model
+assumes concentration measurements to be normally distributed according to:
 \[c \sim \mathcal{N}\left(\bar{c}(x_s,x_r), \sigma \right)\]
 \[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{|x_r - x_s|^2}{\nu^2}\right]} + k\]
 where $x_r$ is the robot's location when the measurement is taken. The parameter
 values $\sigma$, $q$ and $\nu$ were fitted from preliminary concentration data.
 The preliminary data and the fitted curves are presented in Figure
-\ref{fig:model-fit}, and the parameters of these fitted curves are shown in Table
-\ref{tab:estimator-parameters}. Because the baseline chemical sensor reading was
-observed to vary across the preliminary trials, the height offset $k$ was
-calculated by measuring the average baseline sensor readings over 60 seconds
-before each trial began. The computed height offsets for each trial are listed in Table \ref{tab:height-offset}. 
+\ref{fig:model-fit}, and the parameters of these fitted curves are shown in
+Table \ref{tab:estimator-parameters}. Because the baseline chemical sensor
+reading was observed to vary across the preliminary trials, the height offset
+$k$ was calculated by measuring the average baseline sensor readings over a
+period of 60
+seconds before each trial began. The computed height offsets for all trials are
+listed in Table \ref{tab:height-offset}.
 
 This simple measurement model does not consider
 asymmetric diffusion, time variation of diffusion, convection and wind currents,
@@ -361,8 +355,8 @@ Stochastic & -10.7088 & -10.5289 & -10.7939 & -10.7022 & -10.7959 & -10.9099 & -
 \end{table}
 
 \subsubsection{Planner}
-This experiment compared a simple gradient
-descent (greedy) planning algorithm and
+This experiment compared a greedy gradient
+descent planning algorithm and
 a stochastic planning algorithm. The greedy algorithm always chose the
 next measurement location 1.5 m away from the robot's current
 position, in the direction of the maximum probability estimate of the source location. The
@@ -432,14 +426,15 @@ location of the source, and operated  autonomously throughout
 the trial.  The duration of each trial was 35 minutes, beginning when
 the first chemical sensor reading was taken. 
 
-Nine sets of two trials were conducted using the nine chemical source
-locations shown in Figure \ref{fig:testroom}.  For each source
-location, one trial was conducted using the greedy planner, and one trial
-was conducted using the stochastic planner.  When the location of the source was changed between trials, a waiting period of at least 2 hours
-was allowed, during which no ethanol was exposed. According to regulations regarding the air
-cycle rate for an office building, it was determined that the air in
-the test room was replaced 4 times per hour.  Thus, it was assumed that a 2 hour waiting
-period allowed time for the room to be cleaned of ethanol traces.
+Nine sets of two trials were conducted using the nine chemical source locations
+shown in Figure \ref{fig:testroom}. For each source location, one trial was
+conducted using the greedy planner, and one trial was conducted using the
+stochastic planner. When the location of the source was changed between trials,
+a waiting period of at least 2 hours was allowed, during which no ethanol was
+exposed. According to regulations regarding the air cycle rate for an office
+building, it was determined that the air in the test room was replaced a
+minimum of 4 times per hour. Thus, it was assumed that a 2 hour waiting period
+allowed time for the room to be cleaned of ethanol traces.
 
 \subsubsection{Data Acquisition}
 All of the particles of the particle filter located less than a distance of 1 meter from the
@@ -449,10 +444,10 @@ localization radius at the beginning and end of each trial was used to
 calculate the mean localization rate achieved in that trial by the
 process described in section \ref{sec:results}.
 
-The probabilities of all of the particles were logged each time the
-posterior was updated, and the initial and final sums of probability
-mass within the localization radius were calculated after the
-end of each trial. Raw chemical sensor readings and the robot position were also logged at a rate of 1 hz.
+The probabilities of all of the particles were logged each time the posterior
+was updated, and the initial and final sums of probability mass within the
+localization radius were calculated after the end of each trial. Raw chemical
+sensor readings and the robot position were also logged at a rate of 1 Hz.
 
 \newpage
 
@@ -464,20 +459,18 @@ and detailed statistical analysis of the data to assess the
 hypothesis.
 
 \subsection{Experimental Data}
-For each of the nine source locations, Table \ref{tab:data} shows the
-ratio of the localization rate of
-a trial using the stochastic planner to the localization rate of
-a trial using the simple gradient descent (greedy) planner, as well as
-the raw quantities used to calculate this ratio. $m_0$ is the initial sum of
-the probabilities of particle filter particles located inside the 1
-meter localization radius for each trial, and $m_f$ is the sum
-of the final probabilities of the same particles. The localization rate of
-each trial is calculated according to the equation $rate =
-\frac{m_f/m_0}{T_{trial}}$ where $T_{trial}$ is the length of the
-trial in minutes.  The ratio $R$ is given by the equation $R =
-\frac{rate_{stoch}}{rate_{greedy}}$ and serves as a numerical
-comparison between the localization rate using the greedy planner and
-the localization rate using the stochastic planner for each source location.
+For each of the nine source locations, Table \ref{tab:data} shows the ratio of
+the localization rate of a trial using the stochastic planner to the
+localization rate of a trial using the greedy descent planner, as well as the
+raw quantities used to calculate this ratio. $m_0$ is the initial sum of the
+probabilities of particle filter particles located inside the 1 meter
+localization radius for each trial, and $m_f$ is the sum of the final
+probabilities of the same particles. The localization rate of each trial is
+calculated according to the equation $rate = \frac{m_f/m_0}{T_{trial}}$ where
+$T_{trial}$ is the length of the trial in minutes. The ratio $R$ is given by the
+equation $R = \frac{rate_{stoch}}{rate_{greedy}}$ and serves as a numerical
+comparison between the localization rate using the greedy planner and the
+localization rate using the stochastic planner for each source location.
 
 \begin{table}[htb]
 \centering
@@ -524,7 +517,11 @@ data and the rejected hypothesis.
 \begin{center}
 \fbox{
 \includegraphics[width=6in]{img/Killer.pdf}}
-\caption{Graphical representation of data and hypothesis.}
+\caption[Graphical representation of data and hypothesis.]{Graphical
+  representation of data and hypothesis. For source location 3 the result was
+  significantly different than for the other source locations because for source
+  location 3 the greedy planner localized the source to a higher degree than in
+  any of the other trials.}
 \label{fig:killer}
 \end{center}
 \end{figure}
@@ -922,9 +919,9 @@ The data collected does not contain statistically significant evidence that a
 stochastic planner localizes a chemical source at a faster rate that a greedy
 gradient descent planner. It is believed that any potential difference
 in the performance of the planning
-algorithms was masked by inadequacy of the estimation techniques.
+algorithms was masked by inadequacy of the estimation techniques used in this experiment.
 Further research into robust estimation techniques for indoor robotic odor
-localization is needed to advance the field.
+localization is needed.
 
 \section{Acknowledgments}
 We, the authors, would like to thank our faculty advisors, Professors Youssef
