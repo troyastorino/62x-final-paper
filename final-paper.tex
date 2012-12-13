@@ -15,16 +15,6 @@
 
 \usetocstyle{standard}
 
-\title{\textbf{Planning Algorithms for Indoor Robotic Odor
-    Localization}\\
-{16.622 Final Report}}
-
-\date{\today}
-
-\author{Authors: \\Troy Astorino \\ Mark Van de Loo \\
-  \\ 
-  Advisors:\\ Professor Youssef Marzouk \\ Professor Nicholas
-    Roy \\ Josh Joseph \\ Javier Velez \\ Xun Huan \\ Sachi Hemachandra}
 
 \newcommand{\Tablewidth}[0]{1in}
 \newcommand{\Tablewidthtwo}[0]{3in}
@@ -45,22 +35,21 @@
   \fi
 }
 
-% \makeatletter
-%   \renewcommand\l@subsection{\@dottedtocline{2}{1.5em}{3em}}
-% \makeatother
-  
+
 \begin{document}
-\abstract{A simple gradient descent planning
-  algorithm and a stochastic planning algorithm were compared in the
-  context of indoor robotic odor localization.  The planners were tested assuming a Gaussian model and
-  a Bayesian inference estimator on a ground robot equipped with a chemical vapor
-  concentration sensor.  In the task of localizing a single chemical vapor source
-  in a closed room, there was not shown to be a statistically
-  significant difference between the localization rates achieved by
-  the two planners.  It is concluded that further research in the area
-of modeling and estimation techniques for indoor robotic odor
-localization is necessary.}
-\maketitle
+\input{./title.tex}
+
+\newpage
+\section*{Abstract}
+  A simple gradient descent planning algorithm and a stochastic planning
+  algorithm were compared in the context of indoor robotic odor localization.
+  The planners were tested assuming a Gaussian model and a Bayesian inference
+  estimator on a ground robot equipped with a chemical vapor concentration
+  sensor. In the task of localizing a single chemical vapor source in a closed
+  room, there was not shown to be a statistically significant difference between
+  the localization rates achieved by the two planners. It is concluded that
+  further research in the area of modeling and estimation techniques for indoor
+  robotic odor localization is necessary.
 
 
 \newpage
@@ -302,7 +291,7 @@ the measurement model. The measurement model is a normal
 distribution of concentration
 measurements according to: 
 \[c \sim \mathcal{N}\left(\bar{c}(x_s,x_r), \sigma \right)\]
-\[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{\abs{x_r - x_s}^2}{\nu^2}\right]} + k\]
+\[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{|x_r - x_s|^2}{\nu^2}\right]} + k\]
 where $x_r$ is the robot's location when the measurement is taken. The parameter
 values $\sigma$, $q$, $\nu$, and $k$ were fitted from preliminary
 concentration data, and their values are shown in Table
@@ -874,33 +863,50 @@ the distance of the robot from the source.
 
 
 \section{Summary and Conclusion}
-The data collected contradicts the hypothesis that a stochastic planning
-algorithm will be localize a chemical source at a faster rate than a greedy
-planning algorithm. This result is not necessarily reflective of planning being 
-
+The data collected does not find any statistically significant evidence that a
+stochastic planner localizes a chemical source at a faster rate that a greedy
+gradient descent planner. It is believed that potential difference in the planning
+algorithms' performances were masked by failures of the estimation techniques.
+Further research into robust estimation techniques for indoor robotic odor
+localization is needed to advance the field.
 
 \section{Acknowledgments}
 We, the authors, would like to thank our faculty advisors, Professors Youssef
-Marzouk and Nicholas Roy, for the large amount of time they invested in teaching
-us the intricacies and facets of the problem space, and for brainstorming
-alongside us to find solutions to the many issues and problems that arose. We
-must also thank doctoral candidates Josh Joseph and Javier Velez for always
-being happy to put aside valuable time to help us work through the challenges we
-encountered, and for teaching us the concepts and techniques we needed for the
-project, and for even helping us implement some of those! Even though we must
-have seemed slow to pick up on many of the ideas, Josh and Javier were always
-understanding, kind, and willing to assist us. Doctoral candidates Xun Huan and
-Sachi Hemachandra also contributed valuable help, and we must thank them for
-their contributions. Finally, we must thank the 62x course staff: Professors
+Marzouk and Nicholas Roy, for the expertise and experience they brought to the
+project, and all the time they invested in teaching us and brainstorming with
+us. We would like to thank Josh Joseph and Javier Velez for always being happy
+to make time to help us work through the issues we faced, and for being so
+patient and understanding while explaining new concepts and techniques to us.
+Xun Huan and Sachi Hemachandra also volunteered their time to help us progress
+through the project. Finally, we must thank the 16.62x course staff: Professors
 Brian Wardle, Edward Greiter, and Sheila Widnall, communications instructor
 Jennifer Craig, laboratory instructors Dick Perdichizzi, Dave Robertson, and Tod
-Billings, and of course TA Louis Perna. The course staff was always very
-determined to help us successfully complete our project, and pushed us to
-clearly understand and be able to explain what we were working on. Without their
-insistance on our success, there are many points our project could have
-floundered. We apologize for the difficulties we cause with our project, and
-thank the staff for their extreme willingness to help us work through these
-difficulties to success.
+Billings, and teaching assistant Louis Perna. The course staff was determined to
+help us successfully complete our project, and help push us through to the
+finish line. Without the guidance of all those who helped us on this project, we
+would have never have been able to complete it.
+
+\newpage
+\appendix
+\section{Further Figures}
+\begin{figure}
+\begin{center}
+\fbox{
+\includegraphics[height=5.9in]{img/all-posteriors.pdf}}
+\caption[Final posterior estimates for all trials]{
+  Robot paths and resulting final posterior
+  probability estimates using the greedy planner (left) and the
+  stochastic planner (right) for all source locations, with source location 1
+  at the top and source location 9 at the bottom. The
+  robot paths are shown in black, where each corner represents a
+  measurement location, and the true source locations are
+  shown in green.  The circular color fields represent the particle
+  filter probability distributions.  The particles making up the top 25\% of the
+  probability mass is shown in red, the particles making up the next
+  25\% are shown in yellow, and the bottom 50\% are shown in blue. }
+\end{center}
+\end{figure}
+
 
 \newpage
 \bibliographystyle{aiaa}
