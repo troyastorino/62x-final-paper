@@ -101,10 +101,10 @@ was shown between the performance of the two planners compared.
 \section{Hypothesis, Objective, Success Criteria}
 \label{sec:hos}
 \subsection*{Hypothesis} 
-The mean localization rate of a 45-minute two-dimensional search by an
+The mean localization rate of a 35-minute two-dimensional search by an
 autonomous ground robot equipped with a chemical vapor sensor will be 20 percent
 greater using a stochastic planner than using a simple gradient descent planner.
-\footnote{ The greedy gradient descent algorithm always moves the robot in the
+\footnote{ The simple gradient descent (also reffered to as greedy) algorithm always moves the robot in the
   direction of the best source estimate. A stochastic algorithm moves to a
   location randomly sampled from the source estimate probability distribution,
   allowing the planning algorithm to gain a more complete representation of the
@@ -121,7 +121,7 @@ Determine the difference in mean localization rate to a sufficient precision suc
 Review of previous work in the field of robotic odor localization helped to select
 this experiment's test environment of windless indoor rooms with uncommon
 geometries. In addition, it provided the basis for the selection of a Bayesian inference
-estimator and a Gaussian model to be selected as parameters of the experiment, and
+estimator and a Gaussian model as parameters of the experiment, and
 motivated the selection of a simple gradient descent planner and a stochastic
 gradient descent planner as interchangeable parts of the localization algorithm
 to be compared for speed.
@@ -143,11 +143,8 @@ a realistic indoor scenario. A few experiments, such as that done by Ferri, et
 al., have been conducted in an indoor environment without an artificial wind
 source. \cite{ferri} In general, however, it seems that turbulent indoor environments
 have been less explored than their artificial wind source counterparts. For this
-reason, it was decided that this experiment will be conducted in an ambient,
-windless indoor environment. In addition, the experiment will attempt robot odor
-localization in test rooms with floor plans that are not rectangular and have
-non-intuitive geometries, which to the knowledge of the authors has not been done
-previously.
+reason, it was decided that this experiment would be conducted in an ambient,
+windless indoor environment.
 
 \subsection{Selection of Model and Estimator}
 Due to the varying effects of turbulence and diffusion discussed in section 3.1,
@@ -223,7 +220,7 @@ attached to the Envoy robotic platform of the Robust Robotics Group, illustrated
 A laptop computer
 mounted on the robot performed all real-time computation and data
 collection.  The robot used two LIDARs and a pre-loaded map of the
-test room to determine its position.  The position was made available
+test room to determine its position.  The robot's position was made available
 as telemetry to the estimator via the LCM messaging protocol at a rate
 of 40 hz as
 illustrated in Figure \ref{fig:acquisition}.
@@ -251,7 +248,7 @@ concentration were recorded at a rate of 1 hz.  These readings were
 averaged, and the natural logarithm of the average was passed to the
 estimator.  The estimator then used this value and the current
 position of the robot to update its posterior belief.  This belief was
-then passed to the planner, which issued the next commanded
+passed to the planner, which issued the next commanded
 measurement location to the robot.  The robot moved to that measurement
 location, and began the process again.  Data flow between the components of the system is illustrated in
 Figure \ref{fig:acquisition}.
@@ -261,7 +258,7 @@ Figure \ref{fig:acquisition}.
 \includegraphics[width=6in]{img/acquisition.pdf}
 \caption[Data acquisition flowchart]{The components of the system, and the paths along which data is
   communicated. Messages are passed among different components of the robot's
-  software using the LCM protocol.  Sensor readings include a raw
+  software using the LCM protocol.  Sensor readings consist of a raw
   chemical concentration value.  The
   posterior distribution is the robot's current best estimate of the chemical
   source's location. Commands are sent in the form of a target position and
@@ -301,7 +298,7 @@ concentration data, and their values are shown in Table
 \ref{tab:estimator-parameters}.  This simple measurement model does
 not consider asymmetric
 diffusion, time variation of diffusion, convection and wind currents, or the dynamic response of the
-sensor, all of which may have been present as disturbances of the test environment. It was believed that the estimation technique would
+sensor, all of which may have been present as disturbances in the test environment. It was believed that the estimation technique would
 cause the posterior estimate to accurately converge to the true source location by
 treating the deviations of real-world
 dynamics from the simple model as measurement noise.
@@ -376,7 +373,6 @@ Surface area of chemical vapor source & 0.018 $\text{m}^2$\\ \hline
 Vertical distance between sensor plane and
 test room floor & 0.3 $\text{m}$ \\ \hline
 Minimum initial distance between sensor and chemical & 2 $\text{m}$ \\ \hline
-Radius of localization & 1.0 $\text{m}$ \\ \hline
 Delay between robot start and source exposure & 30 minutes \\ \hline
 Delay between source exposure and the start of a trial & 30 minutes \\ \hline
 Duration of trial & 35 minutes \\ \hline
@@ -433,8 +429,8 @@ a trial using the stochastic planner to the localization rate of
 a trial using the simple gradient descent (greedy) planner, as well as
 the raw quantities used to calculate this ratio. $m_0$ is the initial sum of
 the probabilities of particle filter particles located inside the 1
-meter localization radius for each trial, and $m_f$ is the final sum
-of the probabilities of the same particles. The localization rate of
+meter localization radius for each trial, and $m_f$ is the sum
+of the final probabilities of the same particles. The localization rate of
 each trial is calculated according to the equation $rate =
 \frac{m_f/m_0}{T_{trial}}$ where $T_{trial}$ is the length of the
 trial in minutes.  The ratio $R$ is given by the equation $R =
@@ -498,13 +494,14 @@ data and the rejected hypothesis.
 In addition to the assessment of the hypothesis presented in section \ref{sec:hos}, a two-sided Student's
 t-test with 8 degrees of freedom was used on the hypothesis $R_{mean}
 = 1$ to determine whether there was any statistically significant
-difference in the mean localization rates.  This test gave
+difference in the mean localization rates using the two planners.  This test gave
 a t-statistic of $-1.0903$ and a p-value of $0.3073$, showing that
 there is no statistically significant difference in the mean localization
 rate achieved with the stochastic planner and the rate achieved with
 the simple gradient descent planner.
 
 \section{Discussion}
+\label{sec:discussion}
 As described in the previous section, the stochastic planner was not
 shown to produce a higher mean localization
 rate than the simple gradient descent planner.  One possible cause may
@@ -612,19 +609,18 @@ $A_{stoch}$ & 0.4940 & 0.4523 & 0.5405 & 0.5278 & 0.5032 & 0.5717 & 0.4930 & 0.5
 \end{center}
 \end{table}
 
-The differences in the distribution of measurement locations over the test room
-produced by the greedy planner and the stochastic planner caused the
+The differences in the area over which concentration measurements were
+taken using the greedy planner and the stochastic planner caused the
 two planners
 to produce different final particle filter probability distributions,
 as illustrated qualitatively in Figure \ref{tab:paths}.  However, as
 discussed in section \ref{sec:results}, the difference in final
 probability distributions did not produce a statistically significant
-difference in the localization rate.  As discussed earlier in this
-section, it is possible that the point of highest concentration is
-not the true source location.  If this is the case, the use of a localization radius about
+difference in the localization rate.  In the case where the true source location is
+not the point of highest concentration, as discussed earlier in this section, the use of a localization radius about
 the true source location
-to determine the localization rate may not fully assess the
-relative performance of the two planners.  Though the use of a
+to determine the localization rate may not fully characterize
+differences in the performance of the two planners.  Though the use of a
 localization radius accurately
 assesses the performance of the system in localizing the true source,
 and thus correctly and accurately assesses the hypothesis, this metric only takes
@@ -634,11 +630,13 @@ during a trial.
 It is feasible that a more robust estimaton technique could be developed through
 future research that takes into account the fact that a maximum in the
 chemical vapor concentration field may not exist at the true source
-location.  To gain preliminary intuition regarding the relative performance of the simple gradient descent planner and the
-stochastic planner in such a circumstance, a metric that takes into
-account all of the information gained by the particle filter was used.  The metric consisted of calculating a
+location.  In this case, a preliminary analysis of the
+differences in performance of the greedy planner and the
+stochastic planner that is not entirely obscured by the assumption of a chemical
+concentration maximum at the true source location may prove useful.  A
+metric that consists of calculating a
 weighted average distance from each particle location to the true
-source location.  The weight of each particle was equal to the
+source location was chosen.  The weight of each particle was equal to the
 probability mass held by that particle.  The weighted average distance
 of the final posterior of each trial from the true source location is
 presented in Table \ref{tab:weighted-distance}.  $D_{greedy}$ is the final
@@ -652,12 +650,13 @@ $0.8862$ and a p-value of $0.4014$, and thus the ratio is not
 statistically significantly different from 1.  However, if source
 location 3 is ignored on grounds that the trial with the greedy
 planner for this location localizes the source an order of magnitude
-more effectively than any of the other trials, as shown in
+more effectively than any of the other trials, and thus dominates the results as shown in
 Table \ref{tab:data}, the same test
 gives a t-statistic of $-2.4529$ and a p-value
 of $0.0439$.  This means that for the trials that seem not to
 localize the source, the stochastic planner may gain more information
-about the location of the true source than the greedy planner.
+about the location of the true source than the greedy planner with
+statistical significance.
 
 \begin{table}[htb]
 \begin{center}
@@ -685,7 +684,7 @@ source location]{Weighted distance of the posterior particle distribution from t
 One non-ideal characteristic of the weighted average distance metric
 is that the particles far from the true source location have a greater
 impact on the result than particles close to the source location.
-The Kullback - Leibler divergence (KL divergence) of the final
+The Kullback - Leibler divergence (KL divergence) of the final estimator
 probability distribution from an ``ideal'' Gaussian posterior about
 the true source location for each trial is shown in Table
 \ref{tab:kl-ideal}.  The KL-divergence metric does not allow particles far from
@@ -790,11 +789,16 @@ Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0
 
 
 \subsection{Future Work}
-The experimental results show that neither planner was faster at
-localizing the source. Neither planner was faster, however, because outside of
-one trial neither planner localized the source.  At a minimum, the results show
-that, of the components employed in this experiment, estimation is more critical
-to mission success than planning. 
+As discussed in section \ref{sec:discussion}, one reason that the
+experimental results did not show a statistically significant
+difference in the localization rates using the
+greedy planner and the stochastic planner was the lack of statistically significant
+difference between final and initial sums of probability mass within
+the localization radius.  The suspected cause of this lack of
+difference is the use of an inadequate estimation technique.  It is
+believed that further research in the area of probabilistic estimation for robotic
+odor localization is necessary before additional research in the area
+of planners will be meaningful.
 
 There are many avenues for improvements to estimation. The simplest would
 require only choosing parameters for the current estimator. The data collected
