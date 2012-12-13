@@ -247,9 +247,9 @@ behaviors and sensor dynamics to attenuate before beginning to take readings.
 This period was followed by another 30 second period during which readings of
 the chemical vapor concentration were recorded at a rate of 1 Hz. These readings
 were averaged, and the natural logarithm of the average was passed to the
-estimator. An average reading was used because it was observed that there was a
-large variance in the readings measured at any given location, a variance on the
-same order of magnitude as the average reading value. The estimator then used
+estimator. An average reading was used because it was observed that
+there was a variance in the readings measured at any given location on the
+same order of magnitude as the average value. The estimator then used
 this value and the current position of the robot to update its posterior belief.
 This belief was passed to the planner, which commanded the next measurement
 location to the robot. The robot moved to that location and began the process
@@ -298,12 +298,12 @@ measurements according to:
 \[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{|x_r - x_s|^2}{\nu^2}\right]} + k\]
 where $x_r$ is the robot's location when the measurement is taken. The parameter
 values $\sigma$, $q$ and $\nu$ were fitted from preliminary concentration data.
-The preliminary data, alongside the fitted curves, is presented in Figure
-\ref{fig:model-fit}, and the values resulting from this are shown in Table
+The preliminary data and the fitted curves are presented in Figure
+\ref{fig:model-fit}, and the parameters of these fitted curves are shown in Table
 \ref{tab:estimator-parameters}. Because the baseline chemical sensor reading was
 observed to vary across the preliminary trials, the height offset $k$ was
-calculated by measuring the average baseline sensor reading over 60 seconds
-before the the trial began. The computed height offsets for each trial are listed in Table \ref{tab:height-offset}. 
+calculated by measuring the average baseline sensor readings over 60 seconds
+before each trial began. The computed height offsets for each trial are listed in Table \ref{tab:height-offset}. 
 
 This simple measurement model does not consider
 asymmetric diffusion, time variation of diffusion, convection and wind currents,
@@ -452,8 +452,7 @@ process described in section \ref{sec:results}.
 The probabilities of all of the particles were logged each time the
 posterior was updated, and the initial and final sums of probability
 mass within the localization radius were calculated after the
-end of each trial. Raw chemical sensor readings, robot position, planner commands, and
-posterior estimates were also logged at a rate of 1 hz.
+end of each trial. Raw chemical sensor readings and the robot position were also logged at a rate of 1 hz.
 
 \newpage
 
