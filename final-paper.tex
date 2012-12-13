@@ -798,54 +798,68 @@ the localization radius.  The suspected cause of this lack of
 difference is the use of an inadequate estimation technique.  It is
 believed that further research in the area of probabilistic estimation for robotic
 odor localization is necessary before additional research in the area
-of planners will be meaningful.
+of planners using the formulation of this experiment will be meaningful.
 
-There are many avenues for improvements to estimation. The simplest would
-require only choosing parameters for the current estimator. The data collected
-while running the trials can be combined into a much larger dataset than the
-preliminary one that was used to fit parameter values for the measurement model.
-Additionally, the value for the measurement noise, $\sigma$ in Table
+There are many possible ways to improve estimation. The simplest
+involves simply updating the parameters of the current estimator with more
+informed values. The data collected
+while running the trials required of this experiment forms a much larger dataset than the
+preliminary set used to fit parameter values for the measurement model
+described in section \ref{sec:design}, and could be used to improve
+the measurement model.  Additionally, the value for the measurement noise, $\sigma$ in Table
 \ref{tab:estimator-parameters}, was set to a value an order of magnitude larger
-than the value the initial fitting indicated, because in the preliminary trials
-the original sigma value caused the probability estimate to collapse too quickly
-to the wrong source location. As the results in Table \ref{tab:nofind} show,
-over the course of the trials the probability mass did not change in a
-statistically significant manner, meaning that the posterior estimate was likely
-too slow in collapsing.  If the posterior was indeed too slow to collapse, the
-measurement noise should be set to a smaller value. 
+than the value indicated by the fitting of preliminary data for this experiment, because in preliminary trials
+this $\sigma$ value caused the probability
+estimate to collapse to a point that was not the true source location. As shown in Table \ref{tab:nofind},
+the probability mass inside the localization radius did not change in a
+statistically significant manner over the course of the trials,
+meaning that the posterior estimate may have been
+too slow in collapsing.  Setting the measurement noise to a smaller
+value would cause the posterior to collapse more quickly, which may
+result in a larger change in the sum of probability mass inside the
+localization radius over the course of a trial.
 
-Rigorous characterization of the sensor dynamics could also lead to a more
-effective measurement model. As previously noted, the baseline value of sensor
-readings changed significantly across testing days. Understanding and accounting
-for the factors that caused these changes could improve the performance of the
-estimator. It was also observed that the sensor would take 20 to 30 minutes
-beyond the time necessary for the sensor chamber to heat to the proper
-temperature for the readings stabilize at a baseline value. Understanding and
-characterizing this behavior, along with any other potential time-varying
-behavior of the sensor, could again improve estimator performance. Finally, an
-accurate mapping from sensor readings to chemical concentrations could be
-necessary for more sophisticated measurement models.  This mapping could be
-experimentally determined by recording sensor readings over time while the sensor
-is exposed to a known concentration level. This could be achieved in a small, sealed
-container inside of which a known quantity of ethanol could be allowed to
-evaporate. 
+Rigorous characterization of the sensor dynamics could also help with
+the development of a more capable estimator. As
+noted in section \ref{sec:design}, the baseline value of sensor
+readings changed significantly from one test day to another. Understanding and accounting
+for the factors that caused the changes in baseline readings could
+improve the measurement model. It was also qualitatively observed that
+the sensor readings took more time to stabilize when subjected to a
+concentration that decreased over time than they took to stabilize
+when subjected to an increasing chemical concentration. Understanding and
+characterizing time constants associated with this assymptotic
+behavior, as well as other higher frequency dynamics, may be another
+way to improve estimator performance. Finally, an
+accurate mapping from sensor readings to chemical concentrations may be
+necessary for more sophisticated measurement models.  Raw sensor
+readings have units of Ohms, and it was deemed unnecessary to
+characterize the exact mapping to units of parts per million in this
+experiment, due to the simplicity of the chosen measurement model.  An
+exact mapping could be
+experimentally determined by recording sensor readings over time while
+exposing the sensor to a known concentration of ethanol in a small, sealed
+container. 
 
-Dispersion dynamics holds the widest range of potential estimation
-improvements, though many of these improvements are perhaps more difficult to
-implement than the improvements mentioned previously.  The likelihood function
-is based on a model of diffusion, but as discussed in Section
-\ref{sec:lit-review}, the effect of convection dominates that of diffusion for
+The characterization and mitigation of indoor chemical vapor dispersion dynamics holds the
+broadest range of possibilities for improvements in estimation
+technique.  The likelihood function used by the estimator in this
+experiment is based on a model of diffusion as presented in section \ref{sec:design}, but as discussed in Section
+\ref{sec:lit-review}, the effects of convection and other air currents
+may dominate the effect of diffusion for
 chemical dispersion in an indoor environment. There are many ways to incorporate
 convective effects into the measurement function, covering a large range in
-degree of difficulty. The most accurate description of the system would likely
-require methods of computation fluid dynamics dependent on knowledge of the room
-shape and ventilation locations. These computations, however, would likely be
+their degree of complexity. The most accurate description of the
+behavior of the dispersing chemical would likely
+require methods of computational fluid dynamics dependent on knowledge of the room
+shape and ventilation characteristics. These computations, however, may be
 too resource intensive to run in real-time on a robotic platform, and the
-dependence on location specific features potentially loses generality of the
-solution. The latter objection could be addressed by integrating the dispersion
+dependence on location specific features potentially causes the  generality of the
+solution to be lost. The latter objection could be addressed by integrating the dispersion
 model with online mapping, but this would greatly increase the complexity of the
-solution. Simpler options should likely be exhausted before turning to
-computational fluid dynamics tools.
+solution. It may be wise to exhaust simpler options before turning to
+the integration of
+computational fluid dynamics tools to improve the estimator.
 
 Simpler models similar to that used in the conducted experiment could still
 reflect that convection is the dominant dispersive effect. For instance, with
