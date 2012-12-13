@@ -882,13 +882,33 @@ help us successfully complete our project, and help push us through to the
 finish line. Without the guidance of all those who helped us on this project, we
 would have never have been able to complete it.
 
+
+\newpage
+\bibliographystyle{aiaa}
+\bibliography{sources}
+\nocite{*}
+
 \newpage
 \appendix
-\section{Further Figures}
+\section{Additional Figures}
+\begin{figure}
+\begin{center}
+\fbox{\includegraphics[width=6in]{img/model-fit.pdf}}
+\caption[Fit of model parameters to preliminary data.]{
+  The fit of the measurement model to preliminary data. The purple
+  diamonds show measurement models for different sets of trial data. The Alpha
+  Mos NEEM sensor had different baseline concentration values on different days,
+  so the measurement model used a height offset dependent on the baseline
+  concentration on a given day. The other markers represent actual measured
+  concentrations. The markers that are the same shape and color are from the
+  same trial.}
+\end{center}
+\end{figure}
+
 \begin{figure}
 \begin{center}
 \fbox{
-\includegraphics[height=5.9in]{img/all-posteriors.pdf}}
+\includegraphics[height=8in]{img/all-posteriors.pdf}}
 \caption[Final posterior estimates for all trials]{
   Robot paths and resulting final posterior
   probability estimates using the greedy planner (left) and the
@@ -903,10 +923,5 @@ would have never have been able to complete it.
 \end{center}
 \end{figure}
 
-
-\newpage
-\bibliographystyle{aiaa}
-\bibliography{sources}
-\nocite{*}
 
 \end{document}
