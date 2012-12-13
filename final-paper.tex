@@ -900,29 +900,30 @@ dependence on location specific features potentially causes the  generality of t
 solution to be lost. The latter objection could be addressed by integrating the dispersion
 model with online mapping, but this would greatly increase the complexity of the
 solution. It may be wise to exhaust simpler options before turning to
-the integration of
-computational fluid dynamics tools to improve the estimator.
+the integration of computational fluid dynamics tools to improve the estimator.
 
-Simpler models similar to that used in the conducted experiment could still
-reflect that convection is the dominant dispersive effect. For instance, with
-convection being dominant we expect dispersion to be characterized by small
-pockets of high concentration, with these pockets most common and dense near the
-source, and then becoming less common and less dense farther from the source.
-This would lead to rapidly changing, high variance readings near the source
-location, where many dense concentration packets quickly pass over the mouth of
-the sensor, and slower changing, lower variance readings farther from the source
-location. This type of behavior was observed by this experiment, and by Ferri
-et. all in their experiments. \cite{ferri} Considering of this behavior, in
-additional to the average reading value a measurement model could predict the
-variance of sensor readings, or speed of the change in readings, based on
-the distance of the robot from the source.
+Probabilistically motivated models similar to the model assumed in this experiment may still
+be able to reflect the fact that convection may be the dominant dispersive effect. For instance, if
+convection is dominant, the dispersion may be characterized by small
+pockets of high concentration, with these pockets more common and dense near the
+source than at the edges of a test room.  This would lead to a higher
+variance set of readings near the source location, where many high-concentration packets quickly pass over the inlet of
+the sensor, than at the edge of the test room, where packets may be less
+common and their concentration may be lower than the concentration of
+packets near the source. This variation in variance of the readings over distance from the source
+was observed qualitatively in this
+experiment, as well as by Ferri
+et. al. \cite{ferri} Thus, incorporating the variance of concentration
+readings in addition to the average value of the readings may result
+in an effective estimation technique. 
 
 
 \section{Summary and Conclusion}
-The data collected does not find any statistically significant evidence that a
+The data collected does not contain statistically significant evidence that a
 stochastic planner localizes a chemical source at a faster rate that a greedy
-gradient descent planner. It is believed that potential difference in the planning
-algorithms' performances were masked by failures of the estimation techniques.
+gradient descent planner. It is believed that any potential difference
+in the performance of the planning
+algorithms was masked by inadequacy of the estimation techniques.
 Further research into robust estimation techniques for indoor robotic odor
 localization is needed to advance the field.
 
