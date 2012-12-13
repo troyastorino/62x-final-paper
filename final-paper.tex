@@ -41,15 +41,17 @@
 
 \newpage
 \section*{Abstract}
-  A simple gradient descent planning algorithm and a stochastic planning
-  algorithm were compared in the context of indoor robotic odor localization.
-  The planners were tested assuming a Gaussian model and a Bayesian inference
-  estimator on a ground robot equipped with a chemical vapor concentration
-  sensor. In the task of localizing a single chemical vapor source in a closed
-  room, there was not shown to be a statistically significant difference between
-  the localization rates achieved by the two planners. It is concluded that
-  further research in the area of modeling and estimation techniques for indoor
-  robotic odor localization is necessary.
+A greedy gradient descent planning algorithm and a stochastic planning algorithm
+were compared in the context of indoor robotic odor localization. A ground robot
+was equipped with an electronic nose that uses metal oxide sensors to measure
+chemical concentration. State estimation was implemented through the use of a
+particle filter that assumed a chemical concentration profile exponentially
+decaying with the square of the distance to the source. In localizing a single
+chemical vapor source in a closed room, there was not shown to be a
+statistically significant difference between the localization rates achieved by
+the two planners. It is concluded that further research in the area of modeling
+and estimation techniques for indoor robotic odor localization is necessary, and
+potential directions for future work are discussed.
 
 
 \newpage
@@ -192,9 +194,9 @@ the issues caused by temporary local maxima.
 
 \section{Description of Experiment}
 \subsection{Experimental Overview}
-A simple gradient descent (greedy) planning aglorithm and a
+A greedy gradient descent planning aglorithm and a
 stochastic planning algorithm were tested using the
-same model and estimation method. A sensor capable of identifying the
+same measurement model and estimation algorithm. A sensor capable of identifying the
 concentration of ethanol in the surrounding air was mounted on a ground
 robot. A dish of ethanol was placed in a test room, and the mean rate at which the robot localized the ethanol source
 using the greedy planner was compared to the mean rate using the
@@ -222,7 +224,7 @@ mounted on the robot performed all real-time computation and data
 collection.  The robot used two LIDARs and a pre-loaded map of the
 test room to determine its position.  The robot's position was made available
 as telemetry to the estimator via the LCM messaging protocol at a rate
-of 40 hz as
+of 40 Hz as
 illustrated in Figure \ref{fig:acquisition}.
 
 \begin{figure}
@@ -239,19 +241,20 @@ illustrated in Figure \ref{fig:acquisition}.
 
 \subsubsection{System Control Flow}
 
-After reaching each measurement location commanded by the planner,
-the robot entered a waiting period of 30 seconds to allow transient
-concentration behaviors and sensor dynamics to attenuate before
-beginning to take readings.  This period was followed by another 30
-second period during which readings of the chemical vapor
-concentration were recorded at a rate of 1 hz.  These readings were
-averaged, and the natural logarithm of the average was passed to the
-estimator.  The estimator then used this value and the current
-position of the robot to update its posterior belief.  This belief was
-passed to the planner, which issued the next commanded
-measurement location to the robot.  The robot moved to that measurement
-location, and began the process again.  Data flow between the components of the system is illustrated in
-Figure \ref{fig:acquisition}.
+After reaching each measurement location commanded by the planner, the robot
+entered a waiting period of 30 seconds to allow transient concentration
+behaviors and sensor dynamics to attenuate before beginning to take readings.
+This period was followed by another 30 second period during which readings of
+the chemical vapor concentration were recorded at a rate of 1 Hz. These readings
+were averaged, and the natural logarithm of the average was passed to the
+estimator. An average reading was used because it was observed that there was a
+large variance in the readings measured at any given location, a variance on the
+same order of magnitude as the average reading value. The estimator then used
+this value and the current position of the robot to update its posterior belief.
+This belief was passed to the planner, which commanded the next measurement
+location to the robot. The robot moved to that location and began the process
+again. Data flow between the components of the system is illustrated in Figure
+\ref{fig:acquisition}.
 
 \begin{figure}
 \begin{center}
@@ -273,7 +276,8 @@ Figure \ref{fig:acquisition}.
 The estimate of the source location was calculated using a particle
 filter\cite{maskell2001tutorial}. The particles were distributed with uniform
 spacing over the area of the test room, and each particle held the posterior
-estimate's belief that it was the location of the source. The particle density is given in Table
+estimate's belief that it was the location of the source. The particle density
+used is given in Table
 \ref{tab:estimator-parameters}. 
 
 Each time the estimator received a
@@ -293,15 +297,21 @@ measurements according to:
 \[c \sim \mathcal{N}\left(\bar{c}(x_s,x_r), \sigma \right)\]
 \[\bar{c}(x_s,x_r) = q \exp{\left[-\frac{|x_r - x_s|^2}{\nu^2}\right]} + k\]
 where $x_r$ is the robot's location when the measurement is taken. The parameter
-values $\sigma$, $q$, $\nu$, and $k$ were fitted from preliminary
-concentration data, and their values are shown in Table
-\ref{tab:estimator-parameters}.  This simple measurement model does
-not consider asymmetric
-diffusion, time variation of diffusion, convection and wind currents, or the dynamic response of the
-sensor, all of which may have been present as disturbances in the test environment. It was believed that the estimation technique would
-cause the posterior estimate to accurately converge to the true source location by
-treating the deviations of real-world
-dynamics from the simple model as measurement noise.
+values $\sigma$, $q$ and $\nu$ were fitted from preliminary concentration data.
+The preliminary data, alongside the fitted curves, is presented in Figure
+\ref{fig:model-fit}, and the values resulting from this are shown in Table
+\ref{tab:estimator-parameters}. Because the baseline chemical sensor reading was
+observed to vary across the preliminary trials, the height offset $k$ was
+calculated by measuring the average baseline sensor reading over 60 seconds
+before the the trial began. The computed height offsets for each trial are listed in Table \ref{tab:height-offset}. 
+
+This simple measurement model does not consider
+asymmetric diffusion, time variation of diffusion, convection and wind currents,
+or the dynamic response of the sensor, all of which may have been present as
+disturbances in the test environment. It was believed that the estimation
+technique would cause the posterior estimate to accurately converge to the true
+source location by treating the deviations of real-world dynamics from the
+simple model as measurement noise.
 
 \begin{table}
 \caption[Estimator parameters]{Particle filter and measurement model parameters.}
@@ -316,6 +326,38 @@ $k$ & -10.8534  \\ \hline
 \end{tabular}
 \end{center}
 \label{tab:estimator-parameters}
+\end{table}
+
+\begin{figure}
+\begin{center}
+\fbox{\includegraphics[width=6in]{img/model-fit.pdf}}
+\caption[Fit of model parameters to preliminary data.]{
+  The fit of the measurement model to preliminary data. The purple
+  diamonds show measurement models for different sets of trial data. The Alpha
+  Mos NEEM sensor had different baseline concentration values on different days,
+  so the measurement model used a height offset dependent on the baseline
+  concentration on a given day. The other markers represent actual measured
+  concentrations. The markers that are the same shape and color are from the
+  same trial.}
+\label{fig:model-fit}
+\end{center}
+\end{figure}
+
+\begin{table}
+\caption{Measurement model height offsets.}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
+\hline
+Height offset $k$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline \hline
+Greedy & -10.7078 & -10.8031 & -10.6224 & -10.8217 & -10.7253 & -10.5972 & -10.3781 & -10.5596 & -10.8351 \\
+\hline
+Stochastic & -10.7088 & -10.5289 & -10.7939 & -10.7022 & -10.7959 & -10.9099 & -10.4587 & -10.5746 & -10.9096 \\
+\hline
+\end{tabular}
+}
+\label{tab:height-offset}
 \end{table}
 
 \subsubsection{Planner}
@@ -418,7 +460,7 @@ posterior estimates were also logged at a rate of 1 hz.
 \section{Results}
 \label{sec:results}
 The results of this experiment contradict the hypothesis presented in
-section \ref{sec:hos}.  This section contains  a summary of experimental data
+section \ref{sec:hos}.  This section contains a summary of experimental data
 and detailed statistical analysis of the data to assess the
 hypothesis.
 
@@ -439,7 +481,8 @@ comparison between the localization rate using the greedy planner and
 the localization rate using the stochastic planner for each source location.
 
 \begin{table}[htb]
-\begin{center}
+\centering
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
 \hline
  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -460,9 +503,8 @@ $r_{stoch}$ & 0.0295 & 0.0296 & 0.0299 & 0.0279 & 0.0268 & 0.0272 & 0.0280 & 0.0
 $R = \frac{rate_{stoch}}{rate_{greedy}}$  & 1.1371 & 1.0345 & 0.1807 & 0.9869 &
 0.9014 & 0.9505  & 0.9251 & 1.0164 & 0.9564\\
 \hline
-\end{tabular}
+\end{tabular}}
 \caption{Experimental Data \label{tab:data} }
-\end{center}
 \end{table}
 
 The mean $R_{mean}$ of the ratios $R$ for the nine source locations is equal to
@@ -594,7 +636,8 @@ different final particle filter probability distributions.}
 \end{figure}
 
 \begin{table}[htb]
-\begin{center}
+\centering
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
 \hline
  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -603,10 +646,9 @@ $A_{greedy}$ & 0.1006 & 0.0750 & 0.237 & 0.0775 & 0.0802 & 0.1042 & 0.0669 & 0.0
 \hline
 $A_{stoch}$ & 0.4940 & 0.4523 & 0.5405 & 0.5278 & 0.5032 & 0.5717 & 0.4930 & 0.5469 & 0.5311 \\
 \hline
-\end{tabular}
+\end{tabular}}
 \caption{Fraction of possible area covered by the different planning algorithms.}
 \label{tab:paths}
-\end{center}
 \end{table}
 
 The differences in the area over which concentration measurements were
@@ -659,7 +701,8 @@ about the location of the true source than the greedy planner with
 statistical significance.
 
 \begin{table}[htb]
-\begin{center}
+\centering
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
 \hline
  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -670,14 +713,13 @@ $D_{stoch}$ & 3.0180 & 4.4869 & 3.0832 & 3.9119 & 3.8311 & 3.2875 & 3.5517 & 3.4
 \hline
 $\frac{D_{stoch}}{D_{greedy}}$ & 0.9853 & 0.9940 & 1.4053 & 1.0020 & 0.9971 & 1.0017 & 0.9920 & 0.9888 & 0.9979 \\
 \hline
-\end{tabular}
+\end{tabular}}
 \caption[Probabilistically weighted distance from the posterior estimate to the
 source location]{Weighted distance of the posterior particle distribution from the true
   source location. The weighted distance is the average of the distances from
   each particle location to the source location weighted by the probability
   mass of the posterior held by that particle.}
 \label{tab:weighted-distance}
-\end{center}
 \end{table}
 
 
@@ -706,7 +748,8 @@ estimation and planning techniques for robotic odor localization.
 
 
 \begin{table}[htb]
-\begin{center}
+\centering
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
 \hline
  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -717,11 +760,10 @@ $KL_{stoch}$  & 1.2861 & 1.7989 & 1.2882 & 1.5312 & 1.5107 & 1.3297 & 1.3736 & 1
 \hline
 Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0322 & 0.9984 & 1.0050 & 0.9730 & 1.0186 \\
 \hline
-\end{tabular}
+\end{tabular}}
 \caption{Kullback-Leibler divergence of the final particle filter
   posterior distribution from an 'ideal' Gaussion posterior distribution . }
 \label{tab:kl-ideal}
-\end{center}
 \end{table}
 
 
@@ -737,7 +779,8 @@ Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0
 % distribution in each trial is shown in Table \ref{tab:allinfo}.
 
 % \begin{table}[htb]
-% \begin{center}
+% \centering
+% \resizebox{\columnwidth}{!}{
 % \begin{tabular}{|c||c||c||c||c||c||c||c||c||c|}
 % \hline
 %  Source Location & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -748,13 +791,12 @@ Ratio $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.9306 & 0.9833 & 2.1381 & 1.0251 & 1.0
 % \hline
 % $\frac{KL_{stoch}}{KL_{greedy}}$ & 0.4463 & 4.3945 & 0.0052 & 0.6107 & 0.4157 & 2.7365 & 0.1711 & 0.1990 & 0.1282 \\
 % \hline
-% \end{tabular}
+% \end{tabular}}
 % \caption[KL divergence of posterior distribution from a uniform distribution]{Kullback-Leibler divergence of the final particle filter
 %   probability distribution from the initial uniform particle
 %   probability distribution.  This is a measure of how much
 %   information about the environment was gained by the system in each trial. }
 % \label{tab:allinfo}
-% \end{center}
 % \end{table}
 
 % The mean of the ratios $\frac{KL_{stoch}}{KL_{greedy}}$ over the 9
@@ -897,22 +939,8 @@ would have never have been able to complete it.
 \section{Additional Figures}
 \begin{figure}
 \begin{center}
-\fbox{\includegraphics[width=6in]{img/model-fit.pdf}}
-\caption[Fit of model parameters to preliminary data.]{
-  The fit of the measurement model to preliminary data. The purple
-  diamonds show measurement models for different sets of trial data. The Alpha
-  Mos NEEM sensor had different baseline concentration values on different days,
-  so the measurement model used a height offset dependent on the baseline
-  concentration on a given day. The other markers represent actual measured
-  concentrations. The markers that are the same shape and color are from the
-  same trial.}
-\end{center}
-\end{figure}
-
-\begin{figure}
-\begin{center}
 \fbox{
-\includegraphics[height=8in]{img/all-posteriors.pdf}}
+\includegraphics[height=5.9in]{img/all-posteriors.pdf}}
 \caption[Final posterior estimates for all trials]{
   Robot paths and resulting final posterior
   probability estimates using the greedy planner (left) and the
